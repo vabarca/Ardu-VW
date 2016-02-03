@@ -1,9 +1,9 @@
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
 
-/** @file  vw.ino
+/** @file  EEPROMAnything.ino
  *  @date  November, 2015
- *  @brief Main application
+ *  @brief Arduino EEPROM API
  *
  *
  *  @author Cooked by Vicente A. (TT)
@@ -31,7 +31,7 @@
 //---[ Methods ]---------------------------------------------------------------
 
 /**
- *
+ * Write data into EEPROM address
  * @param ee Eeprom memory address
  * @param target Structure to store data
  * @return Number of written bytes
@@ -45,10 +45,8 @@ template <class T> int EEPROM_writeAnything(int ee, const T& target)
     return i;
 }
 
-//-----------------------------------------------------------------------------
-
 /**
- *
+ * Write data from EEPROM address
  * @param ee Eeprom memory address
  * @param target Structure to be read
  * @return Number of read bytes
