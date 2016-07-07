@@ -125,10 +125,12 @@ void _buttonLongPress()
   case ESM_HEADING:
   case ESM_TEMP:
   case ESM_ALTITUDE:
-    _saveAltitudeCalib(gfAltitude);
-    gfAltitudeCalib = gfAltitude;
-    geState = ESM_CALIB_ALTITUDE;
-    break;
+    #ifdef USE_BARO
+      _saveAltitudeCalib(gfAltitude);
+      gfAltitudeCalib = gfAltitude;
+      geState = ESM_CALIB_ALTITUDE;
+      break;
+    #endif
   case ESM_CALIB:
   case ESM_CALIB_ALTITUDE:
   case ESM_WELCOME:
@@ -227,7 +229,11 @@ void _tempTask()
   #ifdef USE_BARO
     gfTemperature = goBaro.getTemperature(MS561101BA_OSR_4096);
   #else
-    gfTemperature = goAccelgyro.getTemperature();
+    static float fM = 0.98;
+    //static float fTAdj = 36.53f;
+    static float fTAdj = 29.53f;
+    gfTemperature = fM * gfTemperature +
+      (1.0-fM)*(((float)goAccelgyro.getTemperature()/340.00f)+fTAdj);
   #endif
 }
 
@@ -276,9 +282,9 @@ void _showAltitude()
 
 void _showTemp()
 {
-  u8g.setPrintPos(20,40);
+  u8g.setPrintPos(40,35);
   u8g.print(gfTemperature);
-  u8g.setPrintPos(100,40);
+  u8g.setPrintPos(90,35);
   u8g.print("C");
 
   SERIAL_PRINT("Temp: ");
@@ -367,14 +373,13 @@ inline void _showWelcome()
 
 void _tasks()
 {
-  _attitudeTask();
   _pressTask();
   _tempTask();
   switch(geState)
   {
     case ESM_ALTITUDE: _altitudeTask();    break;
     case ESM_HEADING:  _headingTask();     break;
-    case ESM_ATTITUDE:
+    case ESM_ATTITUDE: _attitudeTask();    break;
     case ESM_TEMP:
     case ESM_CALIB:
     case ESM_WELCOME:
@@ -392,7 +397,11 @@ void _draw()
   switch(geState)
   {
     case ESM_ALTITUDE:
-      _showAltitude();
+      #ifdef USE_BARO
+        _showAltitude();
+      #else
+        geState = ESM_ATTITUDE;
+      #endif
       timeStamp = millis();
       break;
     case ESM_ATTITUDE:
@@ -414,7 +423,11 @@ void _draw()
         geState = ESM_ALTITUDE;
       break;
     case ESM_HEADING:
-      _showHeading();
+      #ifdef USE_MAG
+        _showHeading();
+      #else
+        geState = ESM_ATTITUDE;
+      #endif
       timeStamp = millis();
       break;
     case ESM_WELCOME:

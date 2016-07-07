@@ -28,9 +28,9 @@
   #define  SERIAL_PRINTLN(a)    Serial.println(a)
   #define  SERIAL_PRINT(a)      Serial.print(a)
 #else
-  #define  SERIAL_BEGIN         
-  #define  SERIAL_PRINTLN(a)    
-  #define  SERIAL_PRINT(a)      
+  #define  SERIAL_BEGIN
+  #define  SERIAL_PRINTLN(a)
+  #define  SERIAL_PRINT(a)
 #endif
 
 //---[ Generic data Types: ]---------------------------------------------------
