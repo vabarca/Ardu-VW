@@ -1,0 +1,11 @@
+RemoteSystemsTempFiles
+.metadata
+.cproject
+.ino.cpp
+.project
+.settings
+*.txt
+*.tmp
+Release
+Debug
+*.d
