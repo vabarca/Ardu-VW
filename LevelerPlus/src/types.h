@@ -17,12 +17,33 @@
 #ifndef _TYPES_H_
  #define _TYPES_H_
 
+ //-----------------------------------------------------------------------------
+ //---[ Standard header files: ]------------------------------------------------
+
+ #if defined(ARDUINO) && ARDUINO >= 100
+   #include "Arduino.h"
+ #else
+   #include "WProgram.h"
+ #endif
+
+ //---[ Version defines: ]-------------------------------------------------------
+
+ /**
+  * Program Major version
+  */
+ const uint8_t  MAJOR     (1);
+ /**
+  * Program Minor version
+  */
+ const uint8_t  MINOR     (0);
+ /**
+  * Program bugs fixes
+  */
+ const uint8_t  PATCH     (0);
+
 //-----------------------------------------------------------------------------
 //---[ Macros: ]---------------------------------------------------------------
 
-//#define ULTIMATE_DEBOUNCER
-
-#define SERIAL_OUTPUT
 #ifdef SERIAL_OUTPUT
   #define  SERIAL_BEGIN         Serial.begin(115200)
   #define  SERIAL_PRINTLN(a)    Serial.println(a)
@@ -42,10 +63,11 @@ enum eStateMachine
   ESM_WELCOME = 0
   ,ESM_TEMP
   ,ESM_ATTITUDE
-  ,ESM_CALIB
+  ,ESM_CALIB_ATTITUDE
   ,ESM_ALTITUDE
   ,ESM_HEADING
   ,ESM_CALIB_ALTITUDE
+  ,ESM_RESET
 };
 
 //---[ Application-specific data Types: ]-------------------------------------
@@ -113,21 +135,6 @@ const uint8_t SSD1306_LCDHEIGHT_MED (SSD1306_LCDHEIGHT/2);
  * read: http://www.freescale.com/files/sensors/doc/app_note/AN3461.pdf
  */
 #define RESTRICT_PITCH
-
-//---[ Version defines: ]-------------------------------------------------------
-
-/**
- * Program Major version
- */
-const uint8_t  MAJOR     (1);
-/**
- * Program Minor version
- */
-const uint8_t  MINOR     (0);
-/**
- * Program bugs fixes
- */
-const uint8_t  PATCH     (0);
 
 //---[ Useful Macros: ]--------------------------------------------------------
 

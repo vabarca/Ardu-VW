@@ -4,7 +4,7 @@
 //-----------------------------------------------------------------------------
 
 /** @file  vw.ino
- *  @date  November, 2015
+ *  @date  November, 2016
  *  @brief Main application
  *
  *
@@ -12,13 +12,18 @@
  *  @bug No know bugs.
  */
 
+ //-----------------------------------------------------------------------------
+ //---[ Macros: ]---------------------------------------------------------------
+
+ //#define ULTIMATE_DEBOUNCER
+ //#define SERIAL_OUTPUT
+ #define USE_BARO
+ //#define USE_MAG
+
 //-----------------------------------------------------------------------------
 //---[ Includes: ]-------------------------------------------------------------
 
 #include "includes.h"
-
-//#define USE_BARO
-//#define USE_MAG
 
 //-----------------------------------------------------------------------------
 //---[ Global variables: ]-----------------------------------------------------
@@ -43,7 +48,8 @@ eStateMachine         geState(ESM_WELCOME);
 #endif
 
 float                 gfTemperature(0.0f);
-float                 gfAltitude(0.0f),gfAltitudeCalib(0.0f);
+float                 gfAltitude(0.0f);
+float                 gfAltitudeCalib(0.0f);
 float                 gfPress(0.0f);
 float                 gfHeading(0.0f);
 float                 gfaMovavg_buff[MOVAVG_SIZE];
@@ -113,46 +119,93 @@ float _getPitch()
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
 
-void _buttonLongPress()
+inline void _reset()
+{
+  asm volatile ("  jmp 0");
+}
+
+//-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
+
+void _button0ShortPress()
 {
   switch(geState)
   {
-  case ESM_ATTITUDE:
-    _saveCalib(goG);
-    goGCal = goG;
-    geState = ESM_CALIB;
-    break;
-  case ESM_HEADING:
-  case ESM_TEMP:
-  case ESM_ALTITUDE:
-    #ifdef USE_BARO
-      _saveAltitudeCalib(gfAltitude);
-      gfAltitudeCalib = gfAltitude;
-      geState = ESM_CALIB_ALTITUDE;
-      break;
-    #endif
-  case ESM_CALIB:
-  case ESM_CALIB_ALTITUDE:
-  case ESM_WELCOME:
-  default:
-    break;
+  case ESM_ATTITUDE:        geState = ESM_TEMP;      break;
+  case ESM_TEMP:            geState = ESM_ALTITUDE;  break;
+  case ESM_ALTITUDE:        geState = ESM_HEADING;   break;
+  case ESM_HEADING:         geState = ESM_RESET;     break;
+  case ESM_RESET:           geState = ESM_ATTITUDE;  break;
+  case ESM_WELCOME:         geState = ESM_ATTITUDE;  break;
+  case ESM_CALIB_ATTITUDE:                           break;
+  case ESM_CALIB_ALTITUDE:                           break;
+  default:                                           break;
   }
 }
 
 //-----------------------------------------------------------------------------
 
-void _buttonShortPress()
+void _button0LongPress()
 {
   switch(geState)
   {
-  case ESM_ATTITUDE: geState = ESM_TEMP;      break;
-  case ESM_TEMP:     geState = ESM_ALTITUDE;  break;
-  case ESM_ALTITUDE: geState = ESM_HEADING;   break;
-  case ESM_HEADING:  geState = ESM_ATTITUDE;  break;
-  case ESM_WELCOME:  geState = ESM_ATTITUDE;  break;
-  case ESM_CALIB:
-  case ESM_CALIB_ALTITUDE:
-  default:                                    break;
+  case ESM_RESET:           break;
+  case ESM_ATTITUDE:        break;
+  case ESM_ALTITUDE:        break;
+  case ESM_HEADING:         break;
+  case ESM_TEMP:            break;
+  case ESM_CALIB_ATTITUDE:  break;
+  case ESM_CALIB_ALTITUDE:  break;
+  case ESM_WELCOME:         break;
+  default:                  break;
+  }
+}
+
+//-----------------------------------------------------------------------------
+
+void _button1ShortPress()
+{
+  switch(geState)
+  {
+  case ESM_ATTITUDE:        break;
+  case ESM_ALTITUDE:        break;
+  case ESM_RESET:           break;
+  case ESM_TEMP:            break;
+  case ESM_HEADING:         break;
+  case ESM_WELCOME:         break;
+  case ESM_CALIB_ATTITUDE:  break;
+  case ESM_CALIB_ALTITUDE:  break;
+  default:                  break;
+  }
+}
+
+//-----------------------------------------------------------------------------
+
+void _button1LongPress()
+{
+  switch(geState)
+  {
+  case ESM_RESET:
+    _reset();
+    break;
+  case ESM_ATTITUDE:
+    _saveCalib(goG);
+    goGCal = goG;
+    geState = ESM_CALIB_ATTITUDE;
+    break;
+  case ESM_ALTITUDE:
+    #ifdef USE_BARO
+      _saveAltitudeCalib(gfAltitude);
+      gfAltitudeCalib = gfAltitude;
+      geState = ESM_CALIB_ALTITUDE;
+    #endif
+    break;
+  case ESM_HEADING:         break;
+  case ESM_TEMP:            break;
+  case ESM_CALIB_ATTITUDE:  break;
+  case ESM_CALIB_ALTITUDE:  break;
+  case ESM_WELCOME:         break;
+  default:                  break;
   }
 }
 
@@ -226,14 +279,15 @@ void _pressTask()
 
 void _tempTask()
 {
+  static float fTempOffset(-6.53);
   #ifdef USE_BARO
-    gfTemperature = goBaro.getTemperature(MS561101BA_OSR_4096);
+    gfTemperature = goBaro.getTemperature(MS561101BA_OSR_4096) + fTempOffset;
   #else
     static float fM = 0.98;
-    //static float fTAdj = 36.53f;
-    static float fTAdj = 29.53f;
+    static float fTAdj = 36.53f;
     gfTemperature = fM * gfTemperature +
-      (1.0-fM)*(((float)goAccelgyro.getTemperature()/340.00f)+fTAdj);
+      (1.0 - fM) *
+      (((float)goAccelgyro.getTemperature() / 340.00f) + fTAdj + fTempOffset);
   #endif
 }
 
@@ -242,7 +296,6 @@ void _tempTask()
 void _altitudeTask()
 {
   #ifdef USE_BARO
-    //return (1.0f - pow(press/101325.0f, 0.190295f)) * 4433000.0f;
     gfAltitude = ((pow((SEA_LEVEL_PRESSURE / gfPress),
         1.0f/5.257f) - 1.0f) * (gfTemperature + 273.15f)) / 0.0065f;
   #endif
@@ -253,7 +306,7 @@ void _altitudeTask()
 void _headingTask()
 {
   #ifdef USE_MAG
-    float fx,fy,fz;
+    static float fx,fy,fz;
     goCompass.getValues(&fx,&fy,&fz);
     gfHeading = atan2(fy, fx);
     if(gfHeading < 0)
@@ -266,16 +319,24 @@ void _headingTask()
 
 void _showAltitude()
 {
-  u8g.setPrintPos(20,40);
-  u8g.print(gfAltitude - gfAltitudeCalib);
-  u8g.setPrintPos(100,40);
-  u8g.print("m");
+  #ifdef USE_BARO
+    u8g.setPrintPos(20,25);
+    u8g.print(gfAltitude - gfAltitudeCalib);
+    u8g.setPrintPos(95,25);
+    u8g.print("m");
+    u8g.setPrintPos(20,45);
+    u8g.print(gfPress);
+    u8g.setPrintPos(95,45);
+    u8g.print("mb");
 
-  SERIAL_PRINT("Pres: ");
-  SERIAL_PRINT(gfPress);
-  SERIAL_PRINT(" mbar altitude: ");
-  SERIAL_PRINT(gfAltitude);
-  SERIAL_PRINTLN(" m");
+    SERIAL_PRINT("Pres: ");
+    SERIAL_PRINT(gfPress);
+    SERIAL_PRINT(" mbar altitude: ");
+    SERIAL_PRINT(gfAltitude);
+    SERIAL_PRINTLN(" m");
+  #else
+    geState = ESM_HEADING;
+  #endif
 }
 
 //-----------------------------------------------------------------------------
@@ -296,23 +357,27 @@ void _showTemp()
 
 void _showHeading()
 {
-  u8g.drawCircle(64, 32, 24);
+  #ifdef USE_MAG
+    u8g.drawCircle(64, 32, 24);
 
-  uint8_t xN((uint8_t)(24*sin(M_PI_D - gfHeading)));
-  uint8_t yN((uint8_t)(24*cos(M_PI_D - gfHeading)));
-  u8g.setFontPosCenter();
-  u8g.drawStr(xN + SSD1306_LCDWIDTH_MED,-yN+ SSD1306_LCDHEIGHT_MED,"N");
-  u8g.drawStr(-xN + SSD1306_LCDWIDTH_MED,yN+ SSD1306_LCDHEIGHT_MED,"S");
-  u8g.drawStr(-xN + SSD1306_LCDWIDTH_MED,-yN+ SSD1306_LCDHEIGHT_MED,"E");
-  u8g.drawStr(xN + SSD1306_LCDWIDTH_MED,yN+ SSD1306_LCDHEIGHT_MED,"O");
-  u8g.setFontPosBaseline();
+    uint8_t xN((uint8_t)(24*sin(M_PI_D - gfHeading)));
+    uint8_t yN((uint8_t)(24*cos(M_PI_D - gfHeading)));
+    u8g.setFontPosCenter();
+    u8g.drawStr(xN + SSD1306_LCDWIDTH_MED,-yN+ SSD1306_LCDHEIGHT_MED,"N");
+    u8g.drawStr(-xN + SSD1306_LCDWIDTH_MED,yN+ SSD1306_LCDHEIGHT_MED,"S");
+    u8g.drawStr(-xN + SSD1306_LCDWIDTH_MED,-yN+ SSD1306_LCDHEIGHT_MED,"E");
+    u8g.drawStr(xN + SSD1306_LCDWIDTH_MED,yN+ SSD1306_LCDHEIGHT_MED,"O");
+    u8g.setFontPosBaseline();
 
-  //u8g.setPrintPos(0,10);
-  //u8g.print(gfHeading);
+    u8g.setPrintPos(0,10);
+    u8g.print(gfHeading);
 
-  SERIAL_PRINT("Orientation: ");
-  SERIAL_PRINT(gfHeading * RAD_2_DEG);
-  SERIAL_PRINTLN(" deg");
+    SERIAL_PRINT("Orientation: ");
+    SERIAL_PRINT(gfHeading * RAD_2_DEG);
+    SERIAL_PRINTLN(" deg");
+  #else
+    geState = ESM_RESET;
+  #endif
 }
 
 //-----------------------------------------------------------------------------
@@ -369,22 +434,31 @@ inline void _showWelcome()
 }
 
 //-----------------------------------------------------------------------------
+
+inline void _showResetMsg()
+{
+  u8g.drawStr(10,40,"Reset System?");
+}
+
+//-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
 
 void _tasks()
 {
-  _pressTask();
   _tempTask();
+  _pressTask();
+
   switch(geState)
   {
-    case ESM_ALTITUDE: _altitudeTask();    break;
-    case ESM_HEADING:  _headingTask();     break;
-    case ESM_ATTITUDE: _attitudeTask();    break;
+    case ESM_ALTITUDE:        _altitudeTask();  break;
+    case ESM_HEADING:         _headingTask();   break;
+    case ESM_ATTITUDE:        _attitudeTask();  break;
     case ESM_TEMP:
-    case ESM_CALIB:
+    case ESM_CALIB_ATTITUDE:
     case ESM_WELCOME:
     case ESM_CALIB_ALTITUDE:
-    default:                               break;
+    case ESM_RESET:
+    default:                                    break;
   }
 }
 
@@ -396,23 +470,12 @@ void _draw()
   static unsigned long timeStamp(millis());
   switch(geState)
   {
-    case ESM_ALTITUDE:
-      #ifdef USE_BARO
-        _showAltitude();
-      #else
-        geState = ESM_ATTITUDE;
-      #endif
-      timeStamp = millis();
-      break;
-    case ESM_ATTITUDE:
-      _showAttitude();
-      timeStamp = millis();
-      break;
-    case ESM_TEMP:
-      _showTemp();
-      timeStamp = millis();
-      break;
-    case ESM_CALIB:
+    case ESM_ALTITUDE: _showAltitude(); timeStamp = millis(); break;
+    case ESM_ATTITUDE: _showAttitude(); timeStamp = millis(); break;
+    case ESM_TEMP:     _showTemp();     timeStamp = millis(); break;
+    case ESM_HEADING:  _showHeading();  timeStamp = millis(); break;
+    case ESM_RESET:    _showResetMsg(); timeStamp = millis(); break;
+    case ESM_CALIB_ATTITUDE:
       _showSystCalib();
       if(millis() - timeStamp > 1500)
         geState = ESM_ATTITUDE;
@@ -422,17 +485,9 @@ void _draw()
       if(millis() - timeStamp > 1500)
         geState = ESM_ALTITUDE;
       break;
-    case ESM_HEADING:
-      #ifdef USE_MAG
-        _showHeading();
-      #else
-        geState = ESM_ATTITUDE;
-      #endif
-      timeStamp = millis();
-      break;
     case ESM_WELCOME:
       _showWelcome();
-      if(millis() - timeStamp > 5000)
+      if(millis() - timeStamp > 3000)
         geState = ESM_ATTITUDE;
       break;
     default:
@@ -520,11 +575,15 @@ void loop()
 {
   //Check buttons
 #ifdef ULTIMATE_DEBOUNCER
-  if(goButton0.is_pressed())_buttonShortPress();
-  if(goButton1.is_pressed())_buttonLongPress();
+  if(goButton0.is_pressed())_button0ShortPress();
+  if(goButton1.is_pressed())_button1LongPress();
 #else
-  if(goButton0.handle()==EV_SHORTPRESS) _buttonShortPress();
-  if(goButton1.handle()==EV_LONGPRESS)  _buttonLongPress();
+  eEvent event (goButton0.handle());
+  if(event==EV_SHORTPRESS) _button0ShortPress();
+  if(event==EV_LONGPRESS)  _button0LongPress();
+  event = goButton1.handle();
+  if(event==EV_SHORTPRESS) _button1ShortPress();
+  if(event==EV_LONGPRESS)  _button1LongPress();
 #endif
 
   //main functions
