@@ -131,12 +131,12 @@ void _button0ShortPress()
 {
   switch(geState)
   {
-  case ESM_ATTITUDE:        geState = ESM_TEMP;      break;
   case ESM_TEMP:            geState = ESM_ALTITUDE;  break;
   case ESM_ALTITUDE:        geState = ESM_HEADING;   break;
-  case ESM_HEADING:         geState = ESM_RESET;     break;
-  case ESM_RESET:           geState = ESM_ATTITUDE;  break;
-  case ESM_WELCOME:         geState = ESM_ATTITUDE;  break;
+  case ESM_HEADING:         geState = ESM_ATTITUDE;  break;
+  case ESM_ATTITUDE:        geState = ESM_RESET;     break;
+  case ESM_RESET:           geState = ESM_TEMP;      break;
+  case ESM_WELCOME:         geState = ESM_TEMP;      break;
   case ESM_CALIB_ATTITUDE:                           break;
   case ESM_CALIB_ALTITUDE:                           break;
   default:                                           break;
@@ -376,7 +376,7 @@ void _showHeading()
     SERIAL_PRINT(gfHeading * RAD_2_DEG);
     SERIAL_PRINTLN(" deg");
   #else
-    geState = ESM_RESET;
+    geState = ESM_ATTITUDE;
   #endif
 }
 
@@ -488,7 +488,7 @@ void _draw()
     case ESM_WELCOME:
       _showWelcome();
       if(millis() - timeStamp > 3000)
-        geState = ESM_ATTITUDE;
+        geState = ESM_TEMP;
       break;
     default:
       break;
