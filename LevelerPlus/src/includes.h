@@ -28,7 +28,7 @@
 
 #include <avr/io.h>
 #include <avr/interrupt.h>
-#include <avr/wdt.h> 
+#include <avr/wdt.h>
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -53,6 +53,15 @@
 #include "EEPROMAnything.h"
 #include "data.h"
 #include "Kalman.h"
+
+#include "IMenuState.h"
+#include "welcomeState.h"
+#include "altitudeState.h"
+#include "altitudeStateCfg.h"
+#include "attitudeState.h"
+#include "attitudeStateCfg.h"
+#include "tempState.h"
+#include "tempStateCfg.h"
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
