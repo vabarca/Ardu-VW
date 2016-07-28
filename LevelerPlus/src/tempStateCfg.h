@@ -18,13 +18,15 @@
  //-----------------------------------------------------------------------------
  //-----------------------------------------------------------------------------
 
-#include "IMenuState.h"
+ #include "stateMachine.h"
 
-class CTempStateCfg : public IMenuState{
+ //-----------------------------------------------------------------------------
+
+class CTempStateCfg : public IState{
 private:
-	CMenu* _pMenu;
+  CStateMachine* _pStateMachine;
 public:
-	CTempStateCfg(CMenu* oMenu):_pMenu(oMenu){}
+  CTempStateCfg(CStateMachine* pStateMachine):_pStateMachine(pStateMachine){}
 	~CTempStateCfg(){}
 	void button0ShortPress();
 	void button1ShortPress();

@@ -1,9 +1,9 @@
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
 
-/** @file  menu.cpp
+/** @file  stateMachine.cpp
  *  @date  July, 2016
- *  @brief Attitude State configuration class
+ *  @brief
  *
  *
  *  @author Cooked by Vicente A. (TT)
@@ -12,19 +12,20 @@
  //-----------------------------------------------------------------------------
  //-----------------------------------------------------------------------------
 
-#include "menu.h"
+#include "includes.h"
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
 
-CMenu::CMenu():
-	_pWelcomeState(new CWelcomeState {this})
+CStateMachine::CStateMachine():
+	_pWelcomeState(new CWelcomeState(this))
 	,_pTempState (new CTempState{this})
   ,_pTempStateCfg (new CTempStateCfg{this})
 	,_pAltitudeState (new CAltitudeState{this})
   ,_pAltitudeStateCfg (new CAltitudeStateCfg{this})
 	,_pAttitudeState (new CAttitudeState{this})
 	,_pAttitudeStateCfg (new CAttitudeStateCfg{this})
+	,_ulTimeStamp(millis())
   ,_u8g(U8G_I2C_OPT_FAST)
   ,_fTemperature(0.0f)
   ,_fAltitude(0.0f)
@@ -37,10 +38,14 @@ CMenu::CMenu():
   ,_i16gx(0)
   ,_i16gy(0)
   ,_i16gz(0)
+
 {
   _pState = _pWelcomeState;
 }
-CMenu::~CMenu()
+
+//-----------------------------------------------------------------------------
+
+CStateMachine::~CStateMachine()
 {
   delete _pWelcomeState;
 	delete _pTempState;
@@ -60,7 +65,9 @@ CMenu::~CMenu()
 	_pAttitudeStateCfg 	= 0;
 }
 
-void  CMenu::setup()
+//-----------------------------------------------------------------------------
+
+void  CStateMachine::setup()
 {
   // Display configuration
   switch(_u8g.getMode())
@@ -112,52 +119,117 @@ void  CMenu::setup()
   _oPitch.setAngle(_getPitch());
 }
 
+//-----------------------------------------------------------------------------
+
 //State machine
-void  CMenu::button0ShortPress(){_pState->button0ShortPress();}
-void  CMenu::button1ShortPress(){_pState->button1ShortPress();}
-void  CMenu::button0LongPress(){_pState->button0LongPress();}
-void  CMenu::button1LongPress(){_pState->button1LongPress();}
-void  CMenu::drawCurrentState(){_pState->drawCurrentState();}
+void  CStateMachine::button0ShortPress(){_pState->button0ShortPress();}
+
+//-----------------------------------------------------------------------------
+
+void  CStateMachine::button1ShortPress(){_pState->button1ShortPress();}
+
+//-----------------------------------------------------------------------------
+
+void  CStateMachine::button0LongPress(){_pState->button0LongPress();}
+
+//-----------------------------------------------------------------------------
+
+void  CStateMachine::button1LongPress(){_pState->button1LongPress();}
+
+//-----------------------------------------------------------------------------
+
+void  CStateMachine::drawCurrentState()
+{
+	_u8g.firstPage();
+	do {
+		_pState->drawCurrentState();
+	} while(_u8g.nextPage());
+}
+
+//-----------------------------------------------------------------------------
 
 //Globals
-void  CMenu::_saveAltitudeCalib(const float& data){EEPROM_writeAnything(EEPROM_CAL_ALTITUDE,data);}
-void  CMenu::_saveCalib(const CData& data){
+void  CStateMachine::_saveAltitudeCalib(const float& data)
+{
+	EEPROM_writeAnything(EEPROM_CAL_ALTITUDE,data);
+}
+
+//-----------------------------------------------------------------------------
+
+void  CStateMachine::_saveCalib(const CData& data)
+{
   EEPROM_writeAnything(EEPROM_CAL_PITCH,data.pitch);
   EEPROM_writeAnything(EEPROM_CAL_ROLL,data.roll);
 }
-void  CMenu::_loadAltitudeCalib(float& data){EEPROM_readAnything(EEPROM_CAL_ALTITUDE,data);}
-void  CMenu::_loadCalib(CData& data){
+
+//-----------------------------------------------------------------------------
+
+void  CStateMachine::_loadAltitudeCalib(float& data)
+{
+	EEPROM_readAnything(EEPROM_CAL_ALTITUDE,data);
+}
+
+//-----------------------------------------------------------------------------
+
+void  CStateMachine::_loadCalib(CData& data)
+{
   EEPROM_readAnything(EEPROM_CAL_PITCH,data.pitch);
   EEPROM_readAnything(EEPROM_CAL_ROLL,data.roll);
 }
-float CMenu::_getRoll(){
+
+//-----------------------------------------------------------------------------
+
+float CStateMachine::_getRoll()
+{
 #ifdef RESTRICT_PITCH
   return atan2((float)_i16ay, (float)_i16az) * RAD_2_DEG;
 #else
   return atan(_i16ay / sqrt((float)_i16ax * (float)_i16ax + (float)_i16az * (float)_i16az)) * RAD_2_DEG;
 #endif
 }
-float CMenu::_getPitch(){
+
+//-----------------------------------------------------------------------------
+
+float CStateMachine::_getPitch()
+{
 #ifdef RESTRICT_PITCH
   return atan(-(float)_i16ax / sqrt((float)_i16ay * (float)_i16ay + (float)_i16az * (float)_i16az)) * RAD_2_DEG;
 #else
   return atan2(-(float)_i16ax, (float)az) * RAD_2_DEG;
 #endif
 }
-void  CMenu::_reset(){asm volatile ("  jmp 0");}
-void  CMenu::_pushAvg(float val){
+
+//-----------------------------------------------------------------------------
+
+void  CStateMachine::_reset()
+{
+	asm volatile ("  jmp 0");
+}
+
+//-----------------------------------------------------------------------------
+
+void  CStateMachine::_pushAvg(float val)
+{
   static int movavg_i(0);
   _faMovavg_buff[movavg_i] = val;
   movavg_i = (movavg_i + 1) % MOVAVG_SIZE;
 }
-float   CMenu::_getAvg(float * buff, int size){
+
+//-----------------------------------------------------------------------------
+
+float CStateMachine::_getAvg(float * buff, int size)
+{
   float sum = 0.0;
   for(int i=0; i<size; i++)
     sum += buff[i];
 
   return sum / size;
 }
-void CMenu::_attitudeTask(){
+
+//-----------------------------------------------------------------------------
+
+void  CStateMachine::_attitudeTask()
+{
   static uint32_t timerCnt(0);
   static float   dt(0.0f), gyroXrate(0.0f), gyroYrate(0.0f);
 
@@ -188,13 +260,21 @@ void CMenu::_attitudeTask(){
   SERIAL_PRINT(_oGDif.roll); SERIAL_PRINT("\t");
   SERIAL_PRINT(_oGDif.pitch); SERIAL_PRINTLN("\t **");
 }
-void CMenu::_pressTask(){
+
+//-----------------------------------------------------------------------------
+
+void CStateMachine::_pressTask()
+{
   #ifdef USE_BARO
     _pushAvg(_oBaro.getPressure(MS561101BA_OSR_4096));
     _fPress = _getAvg(_faMovavg_buff, MOVAVG_SIZE);
   #endif
 }
-void CMenu::_tempTask(){
+
+//-----------------------------------------------------------------------------
+
+void CStateMachine::_tempTask()
+{
   static float fTempOffset(-6.53);
   #ifdef USE_BARO
     _fTemperature = _oBaro.getTemperature(MS561101BA_OSR_4096) + fTempOffset;
@@ -205,25 +285,50 @@ void CMenu::_tempTask(){
       (1.0 - fM) *
       (((float)_oAccelgyro.getTemperature() / 340.00f) + fTAdj + fTempOffset);
   #endif
+
+    SERIAL_PRINT("Temp: ");
+    SERIAL_PRINT(_fTemperature);
+    SERIAL_PRINTLN(" degC");
 }
-void CMenu::_altitudeTask(){
+
+//-----------------------------------------------------------------------------
+
+void CStateMachine::_altitudeTask()
+{
   #ifdef USE_BARO
     _fAltitude = ((pow((SEA_LEVEL_PRESSURE / _fPress),
         1.0f/5.257f) - 1.0f) * (_fTemperature + 273.15f)) / 0.0065f;
+
+    SERIAL_PRINT("Pres: ");
+    SERIAL_PRINT(_fPress);
+    SERIAL_PRINT(" mbar altitude: ");
+    SERIAL_PRINT(_fAltitude);
+    SERIAL_PRINTLN(" m");
   #endif
 }
-void CMenu::_headingTask(){
+
+//-----------------------------------------------------------------------------
+
+void CStateMachine::_headingTask()
+{
   #ifdef USE_MAG
     static float fx,fy,fz;
-    goCompass.getValues(&fx,&fy,&fz);
-    gfHeading = atan2(fy, fx);
-    if(gfHeading < 0)
-      gfHeading += M_PI_D;
+    _oCompass.getValues(&fx,&fy,&fz);
+    _fHeading = atan2(fy, fx);
+    if(_fHeading < 0)
+      _fHeading += M_PI_D;
   #endif
 }
-void CMenu::runCalculus(){
-  _tempTask();
-  _pressTask();
-  _altitudeTask();
-  _attitudeTask();
+
+//-----------------------------------------------------------------------------
+
+void CStateMachine::runCalculus()
+{
+  this->_tempTask();
+  this->_pressTask();
+  this->_altitudeTask();
+  this->_attitudeTask();
 }
+
+//-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------

@@ -1,15 +1,15 @@
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
 
-/** @file  buttonhandler.h
- *  @date  November, 2015
+/** @file  buttonhandler.cpp
+ *  @date  July, 2016
  *  @brief
  *
  *
  *  @author Original from (C) 2011 By P. Bauermeister
  *  @author Cooked by Vicente A. (TT)
  *  @bug No know bugs.
- */
+ */ 
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
@@ -55,7 +55,7 @@ eEvent CButtonHandler::handle()
 
   int now_pressed (!digitalRead(_pin));
 
-  if (!now_pressed && _was_pressed) 
+  if (!now_pressed && _was_pressed)
   {
     // handle release event
     if (_pressed_counter < _longpress_len)
@@ -131,4 +131,3 @@ uint8_t CTheUltimateDebouncer::is_up(void)
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
-

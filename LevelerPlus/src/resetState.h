@@ -18,13 +18,15 @@
  //-----------------------------------------------------------------------------
  //-----------------------------------------------------------------------------
 
-#include "IMenuState.h"
+ #include "stateMachine.h"
 
-class CResetState : public IMenuState{
+ //-----------------------------------------------------------------------------
+
+class CResetState : public IState{
 private:
-	CMenu* _pMenu;
+  CStateMachine* _pStateMachine;
 public:
-	CResetState(CMenu* oMenu):_pMenu(oMenu){}
+  CResetState(CStateMachine* pStateMachine):_pStateMachine(pStateMachine){}
 	~CResetState(){}
 	void button0ShortPress();
 	void button1ShortPress();

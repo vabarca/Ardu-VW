@@ -12,28 +12,65 @@
  //-----------------------------------------------------------------------------
  //-----------------------------------------------------------------------------
 
-#include "attitudeState.h"
+#include "includes.h"
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
 
-void CAttitudeState::button0ShortPress(){}
+void CAttitudeState::button0ShortPress()
+{
+  _pStateMachine->setState(_pStateMachine->getTempState());
+}
 
 //-----------------------------------------------------------------------------
 
-void CAttitudeState::button1ShortPress(){}
+void CAttitudeState::button1ShortPress()
+{
+  _pStateMachine->setState(_pStateMachine->getAltitudeState());
+}
 
 //-----------------------------------------------------------------------------
 
-void CAttitudeState::button0LongPress(){}
+void CAttitudeState::button0LongPress()
+{
+  _pStateMachine->setState(_pStateMachine->getAttitudeStateCfg());
+}
 
 //-----------------------------------------------------------------------------
 
-void CAttitudeState::button1LongPress(){}
+void CAttitudeState::button1LongPress()
+{
+  _pStateMachine->setState(_pStateMachine->getAttitudeStateCfg());
+}
 
 //-----------------------------------------------------------------------------
 
-void CAttitudeState::drawCurrentState(){}
+void CAttitudeState::drawCurrentState()
+{
+  static int y {SSD1306_LCDHEIGHT_MED};
+  static int x {SSD1306_LCDWIDTH_MED};
+  static const int SQUARE_SIZE(8);
+  static const int SQUARE_SIZE_MED(SQUARE_SIZE/2);
+
+  //_pStateMachine->_u8g.setPrintPos(0,11);
+  //_pStateMachine->_u8g.print(_pStateMachine->_oGDif.roll);
+  //_pStateMachine->_u8g.setPrintPos(0,22);
+  //_pStateMachine->_u8g.print(_pStateMachine->_oGDif.pitch);
+
+  _pStateMachine->_u8g.drawBox(0,SSD1306_LCDHEIGHT_MED-2,SSD1306_LCDWIDTH,SQUARE_SIZE_MED);
+  _pStateMachine->_u8g.drawBox(SSD1306_LCDWIDTH_MED-2,0,SQUARE_SIZE_MED,SSD1306_LCDHEIGHT);
+
+  y=(int)_pStateMachine->_oGDif.roll + (SSD1306_LCDHEIGHT_MED)-SQUARE_SIZE_MED;
+  x=-(int)_pStateMachine->_oGDif.pitch + (SSD1306_LCDWIDTH_MED)-SQUARE_SIZE_MED;
+
+  _pStateMachine->_u8g.drawBox(x-SQUARE_SIZE,y-SQUARE_SIZE,SQUARE_SIZE,SQUARE_SIZE);
+  _pStateMachine->_u8g.drawBox(x+SQUARE_SIZE,y-SQUARE_SIZE,SQUARE_SIZE,SQUARE_SIZE);
+  _pStateMachine->_u8g.drawBox(x-SQUARE_SIZE,y+SQUARE_SIZE,SQUARE_SIZE,SQUARE_SIZE);
+  _pStateMachine->_u8g.drawBox(x+SQUARE_SIZE,y+SQUARE_SIZE,SQUARE_SIZE,SQUARE_SIZE);
+
+  if(millis() - _pStateMachine->_ulTimeStamp > 60000)
+    _pStateMachine->setState(_pStateMachine->getTempState());
+}
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------

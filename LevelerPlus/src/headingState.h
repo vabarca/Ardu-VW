@@ -1,9 +1,9 @@
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
 
-/** @file  IMenuState.h
+/** @file  heading.h
  *  @date  July, 2016
- *  @brief Interface
+ *  @brief Attitude State class
  *
  *
  *  @author Cooked by Vicente A. (TT)
@@ -12,27 +12,33 @@
  //-----------------------------------------------------------------------------
  //-----------------------------------------------------------------------------
 
-#ifndef __IMENU_STATE_H__
- #define __IMENU_STATE_H__
+#ifndef __HEADING_STATE_H__
+ #define __HEADING_STATE_H__
 
  //-----------------------------------------------------------------------------
  //-----------------------------------------------------------------------------
 
-class CMenu;
-class IMenuState{
+ #include "stateMachine.h"
+
+ //-----------------------------------------------------------------------------
+
+class CHeadingState : public IState{
+private:
+  CStateMachine* _pStateMachine;
 public:
-	virtual ~IMenuState(){};
-	virtual void button0ShortPress() = 0;
-	virtual void button1ShortPress() = 0;
-	virtual void button0LongPress() = 0;
-	virtual void button1LongPress() = 0;
-	virtual void drawCurrentState() = 0;
+  CHeadingState(CStateMachine* pStateMachine):_pStateMachine(pStateMachine){}
+	~CHeadingState(){}
+	void button0ShortPress();
+	void button1ShortPress();
+	void button0LongPress();
+	void button1LongPress();
+	void drawCurrentState();
 };
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
 
-#endif  // __IMENU_STATE_H__
+#endif  // __HEADING_STATE_H__
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------

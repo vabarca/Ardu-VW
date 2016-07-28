@@ -18,13 +18,15 @@
  //-----------------------------------------------------------------------------
  //-----------------------------------------------------------------------------
 
-#include "IMenuState.h"
+ #include "stateMachine.h"
 
-class CAltitudeState : public IMenuState{
+ //-----------------------------------------------------------------------------
+
+class CAltitudeState : public IState{
 private:
-	CMenu* _pMenu;
+	CStateMachine* _pStateMachine;
 public:
-	CAltitudeState(CMenu* oMenu):_pMenu(oMenu){}
+	CAltitudeState(CStateMachine* pStateMachine):_pStateMachine(pStateMachine){}
 	~CAltitudeState(){}
 	void button0ShortPress();
 	void button1ShortPress();

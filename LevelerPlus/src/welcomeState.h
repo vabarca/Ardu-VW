@@ -7,14 +7,15 @@
  //-----------------------------------------------------------------------------
  //-----------------------------------------------------------------------------
 
+ #include "stateMachine.h"
 
-#include "IMenuState.h"
+ //-----------------------------------------------------------------------------
 
-class CWelcomeState : public IMenuState{
+class CWelcomeState : public IState{
 private:
-	CMenu* _pMenu;
+  CStateMachine* _pStateMachine;
 public:
-	CWelcomeState(CMenu* oMenu):_pMenu(oMenu){}
+  CWelcomeState(CStateMachine* pStateMachine):_pStateMachine(pStateMachine){}
 	~CWelcomeState(){}
 	void button0ShortPress();
 	void button1ShortPress();

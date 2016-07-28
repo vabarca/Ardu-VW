@@ -54,7 +54,7 @@
 #include "data.h"
 #include "Kalman.h"
 
-#include "IMenuState.h"
+#include "stateMachine.h"
 #include "welcomeState.h"
 #include "altitudeState.h"
 #include "altitudeStateCfg.h"
@@ -62,6 +62,8 @@
 #include "attitudeStateCfg.h"
 #include "tempState.h"
 #include "tempStateCfg.h"
+#include "headingState.h"
+#include "resetState.h"
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------

@@ -1,7 +1,7 @@
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
 
-/** @file  menu.h
+/** @file  stateMachine.h
  *  @date  July, 2016
  *  @brief Main application
  *
@@ -12,8 +12,8 @@
  //-----------------------------------------------------------------------------
  //-----------------------------------------------------------------------------
 
- #ifndef __MENU_H__
-  #define __MENU_H__
+ #ifndef __STATE_MACHINE_H__
+  #define __STATE_MACHINE_H__
 
 //-----------------------------------------------------------------------------
 //---[ Includes: ]-------------------------------------------------------------
@@ -23,20 +23,34 @@
 //-----------------------------------------------------------------------------
 //---[ Main class: ]-----------------------------------------------------------
 
-class CMenu{
+class CStateMachine;
+class IState{
+public:
+	virtual ~IState(){};
+	virtual void button0ShortPress() = 0;
+	virtual void button1ShortPress() = 0;
+	virtual void button0LongPress() = 0;
+	virtual void button1LongPress() = 0;
+	virtual void drawCurrentState() = 0;
+};
 
+//-----------------------------------------------------------------------------
+
+class CStateMachine{
 private:
   //State machine
-  IMenuState* _pWelcomeState;
-  IMenuState* _pTempState;
-  IMenuState* _pTempStateCfg;
-  IMenuState* _pAltitudeState;
-  IMenuState* _pAltitudeStateCfg;
-  IMenuState* _pAttitudeState;
-  IMenuState* _pAttitudeStateCfg;
-  IMenuState* _pState;
+  IState* _pWelcomeState;
+  IState* _pTempState;
+  IState* _pTempStateCfg;
+  IState* _pAltitudeState;
+  IState* _pAltitudeStateCfg;
+  IState* _pAttitudeState;
+  IState* _pAttitudeStateCfg;
+  IState* _pState;
 
-	//Globals
+public:
+  unsigned long         _ulTimeStamp;
+
   CData                 _oG;
   CData                 _oGDif;
   CData                 _oGCal;
@@ -79,8 +93,8 @@ private:
   void  _headingTask();
 
 public:
-	CMenu();
-	~CMenu();
+	CStateMachine();
+	~CStateMachine();
 
   void  setup();
   void  runCalculus();
@@ -92,20 +106,20 @@ public:
 	void  button1LongPress();
 	void  drawCurrentState();
 
-	inline IMenuState* getTempState() const {return _pTempState;}
-	inline IMenuState* getTempStateCfg()const {return _pTempStateCfg;}
-	inline IMenuState* getAltitudeState()const {return _pAltitudeState;}
-	inline IMenuState* getAltitudeStateCfg()const {return _pAltitudeStateCfg;}
-	inline IMenuState* getAttitudeState()const {return _pAttitudeState;}
-	inline IMenuState* getAttitudeStateCfg()const {return _pAttitudeStateCfg;}
+	inline IState* getTempState() const {return _pTempState;}
+	inline IState* getTempStateCfg()const {return _pTempStateCfg;}
+	inline IState* getAltitudeState()const {return _pAltitudeState;}
+	inline IState* getAltitudeStateCfg()const {return _pAltitudeStateCfg;}
+	inline IState* getAttitudeState()const {return _pAttitudeState;}
+	inline IState* getAttitudeStateCfg()const {return _pAttitudeStateCfg;}
 
-	inline void setState(IMenuState* pState){this->_pState = pState;}
+	inline void setState(IState* pState){this->_pState = pState;}
 };
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
 
-#endif // __MENU_H__
+#endif // __STATE_MACHINE_H__
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
