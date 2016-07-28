@@ -24,7 +24,7 @@ CStateMachine::CStateMachine():
 	,_pAltitudeState (new CAltitudeState{this})
   ,_pAltitudeStateCfg (new CAltitudeStateCfg{this})
 	,_pAttitudeState (new CAttitudeState{this})
-	,_pAttitudeStateCfg (new CAttitudeStateCfg{this})
+  ,_pAttitudeStateCfg (new CAttitudeStateCfg{this})
   ,_pHeadingState(new CHeadingState{this})
   ,_pResetState(new CResetState{this})
 	,_ulTimeStamp(millis())
@@ -53,20 +53,20 @@ CStateMachine::~CStateMachine()
 	delete _pTempState;
 	delete _pAltitudeState;
 	delete _pAttitudeState;
+  delete _pAttitudeStateCfg;
 	delete _pTempStateCfg;
   delete _pHeadingState;
   delete _pResetState;
 	delete _pAltitudeStateCfg;
-	delete _pAttitudeStateCfg;
 
 	_pState 			      = 0;
 	_pWelcomeState 		  = 0;
 	_pTempState 		    = 0;
 	_pAltitudeState 	  = 0;
 	_pAttitudeState 	  = 0;
+  _pAttitudeStateCfg  = 0;
 	_pTempStateCfg 		  = 0;
 	_pAltitudeStateCfg 	= 0;
-	_pAttitudeStateCfg 	= 0;
   _pHeadingState      = 0;
   _pResetState        = 0;
 }
@@ -75,6 +75,9 @@ CStateMachine::~CStateMachine()
 
 void  CStateMachine::setup()
 {
+  // join I2C bus (I2Cdev library doesn't do this automatically)
+  Wire.begin();
+
   // Display configuration
   switch(_u8g.getMode())
   {

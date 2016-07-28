@@ -1,6 +1,17 @@
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
 
+/** @file  welcomeState.h
+ *  @date  July, 2016
+ *  @brief Main application
+ *
+ *
+ *  @author Cooked by Vicente A. (TT)
+ *  @bug No know bugs.
+ */
+ //-----------------------------------------------------------------------------
+ //-----------------------------------------------------------------------------
+
 #ifndef __WELCOME_STATE_H__
  #define __WELCOME_STATE_H__
 
@@ -12,7 +23,7 @@
  //-----------------------------------------------------------------------------
 
 class CWelcomeState : public IState{
-private:
+protected:
   CStateMachine *_pStateMachine;
 public:
   CWelcomeState(CStateMachine *pStateMachine):_pStateMachine(pStateMachine){}

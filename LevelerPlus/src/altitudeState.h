@@ -23,7 +23,7 @@
  //-----------------------------------------------------------------------------
 
 class CAltitudeState : public IState{
-private:
+protected:
 	CStateMachine* _pStateMachine;
 public:
 	CAltitudeState(CStateMachine* pStateMachine):_pStateMachine(pStateMachine){}

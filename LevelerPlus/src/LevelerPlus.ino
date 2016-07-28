@@ -30,35 +30,6 @@
 CStateMachine           goMenu;
 
 //-----------------------------------------------------------------------------
-//-----------------------------------------------------------------------------
-/*
-void _draw()
-{
-  static unsigned long timeStamp(millis());
-  switch(geState)
-  {
-    case ESM_ALTITUDE: _showAltitude(); timeStamp = millis(); break;
-    case ESM_ATTITUDE: _showAttitude(); timeStamp = millis(); break;
-    case ESM_TEMP:     _showTemp();     timeStamp = millis(); break;
-    case ESM_HEADING:  _showHeading();  timeStamp = millis(); break;
-    case ESM_RESET:    _showResetMsg(); timeStamp = millis(); break;
-    case ESM_CALIB_ALTITUDE:
-      _showSystCalib();
-      if(millis() - timeStamp > 1500)
-        geState = ESM_ALTITUDE;
-      break;
-    case ESM_WELCOME:
-      _showWelcome();
-      if(millis() - timeStamp > 3000)
-        geState = ESM_TEMP;
-      break;
-    default:
-      break;
-  }
-}
-
-*/
-//-----------------------------------------------------------------------------
 //---[ SETUP ]-----------------------------------------------------------------
 //-----------------------------------------------------------------------------
 
@@ -67,8 +38,8 @@ void setup()
   //Initialize serial port
   SERIAL_BEGIN;
 
-  // join I2C bus (I2Cdev library doesn't do this automatically)
-  Wire.begin();
+  //Initialize System
+  goMenu.setup();
 
   //Initialize button
 #ifndef ULTIMATE_DEBOUNCER
@@ -76,9 +47,6 @@ void setup()
   goButton1.init();
   delay(200);
 #endif
-
-  //Initialize System
-  goMenu.setup();
 
   //Configure Led pin
   pinMode(LED_PIN,OUTPUT);
@@ -105,8 +73,6 @@ void loop()
 
   //main functions
   goMenu.runCalculus();
-
-  //Draw information (only drawing operations)
   goMenu.drawCurrentState();
 
   digitalWrite(LED_PIN,!digitalRead(LED_PIN));

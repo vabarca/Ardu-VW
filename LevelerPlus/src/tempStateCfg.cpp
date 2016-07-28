@@ -17,23 +17,40 @@
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
 
-void CTempStateCfg::button0ShortPress(){}
+void CTempStateCfg::button0ShortPress()
+{
+
+}
 
 //-----------------------------------------------------------------------------
 
-void CTempStateCfg::button1ShortPress(){}
+void CTempStateCfg::button1ShortPress()
+{
+
+}
 
 //-----------------------------------------------------------------------------
 
-void CTempStateCfg::button0LongPress(){}
+void CTempStateCfg::button0LongPress()
+{
+  _pStateMachine->setState(_pStateMachine->getTempState());
+}
 
 //-----------------------------------------------------------------------------
 
-void CTempStateCfg::button1LongPress(){}
+void CTempStateCfg::button1LongPress()
+{
+  _pStateMachine->setState(_pStateMachine->getTempState());
+}
 
 //-----------------------------------------------------------------------------
 
-void CTempStateCfg::drawCurrentState(){}
+void CTempStateCfg::drawCurrentState()
+{
+  _pStateMachine->_u8g.setPrintPos(120,10);
+  _pStateMachine->_u8g.print('*');
+  CTempState::drawCurrentState();
+}
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------

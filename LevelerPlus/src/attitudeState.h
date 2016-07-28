@@ -23,7 +23,7 @@
  //-----------------------------------------------------------------------------
 
 class CAttitudeState : public IState{
-private:
+protected:
   CStateMachine* _pStateMachine;
 public:
   CAttitudeState(CStateMachine* pStateMachine):_pStateMachine(pStateMachine){}

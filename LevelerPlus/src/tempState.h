@@ -23,16 +23,16 @@
  //-----------------------------------------------------------------------------
 
 class CTempState : public IState{
-private:
+protected:
   CStateMachine* _pStateMachine;
 public:
   CTempState(CStateMachine* pStateMachine):_pStateMachine(pStateMachine){}
 	~CTempState(){}
-	void button0ShortPress();
-	void button1ShortPress();
-	void button0LongPress();
-	void button1LongPress();
-	void drawCurrentState();
+	virtual void button0ShortPress();
+	virtual void button1ShortPress();
+	virtual void button0LongPress();
+	virtual void button1LongPress();
+	virtual void drawCurrentState();
 };
 
 //-----------------------------------------------------------------------------

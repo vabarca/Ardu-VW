@@ -18,21 +18,19 @@
  //-----------------------------------------------------------------------------
  //-----------------------------------------------------------------------------
 
-#include "stateMachine.h"
+#include "altitudeState.h"
 
 //-----------------------------------------------------------------------------
 
-class CAltitudeStateCfg : public IState{
-private:
-  CStateMachine* _pStateMachine;
+class CAltitudeStateCfg : public CAltitudeState{
 public:
-  CAltitudeStateCfg(CStateMachine* pStateMachine):_pStateMachine(pStateMachine){}
+  CAltitudeStateCfg(CStateMachine* pStateMachine):CAltitudeState{pStateMachine}{}
 	~CAltitudeStateCfg(){}
-	void button0ShortPress();
-	void button1ShortPress();
-	void button0LongPress();
-	void button1LongPress();
-	void drawCurrentState();
+	virtual void button0ShortPress();
+	virtual void button1ShortPress();
+	virtual void button0LongPress();
+	virtual void button1LongPress();
+	virtual void drawCurrentState();
 };
 
 //-----------------------------------------------------------------------------

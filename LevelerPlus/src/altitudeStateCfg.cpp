@@ -17,11 +17,17 @@
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
 
-void CAltitudeStateCfg::button0ShortPress(){}
+void CAltitudeStateCfg::button0ShortPress()
+{
+
+}
 
 //-----------------------------------------------------------------------------
 
-void CAltitudeStateCfg::button1ShortPress(){}
+void CAltitudeStateCfg::button1ShortPress()
+{
+
+}
 
 //-----------------------------------------------------------------------------
 
@@ -29,6 +35,7 @@ void CAltitudeStateCfg::button0LongPress()
 {
   _pStateMachine->_saveAltitudeCalib(_pStateMachine->_fAltitude);
   _pStateMachine->_fAltitudeCalib = _pStateMachine->_fAltitude;
+  _pStateMachine->setState(_pStateMachine->getAltitudeState());
 }
 
 //-----------------------------------------------------------------------------
@@ -40,7 +47,12 @@ void CAltitudeStateCfg::button1LongPress()
 
 //-----------------------------------------------------------------------------
 
-void CAltitudeStateCfg::drawCurrentState(){}
+void CAltitudeStateCfg::drawCurrentState()
+{
+  _pStateMachine->_u8g.setPrintPos(120,10);
+  _pStateMachine->_u8g.print('*');
+  CAltitudeState::drawCurrentState();
+}
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------

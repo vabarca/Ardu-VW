@@ -23,7 +23,7 @@
  //-----------------------------------------------------------------------------
 
 class CResetState : public IState{
-private:
+protected:
   CStateMachine* _pStateMachine;
 public:
   CResetState(CStateMachine* pStateMachine):_pStateMachine(pStateMachine){}

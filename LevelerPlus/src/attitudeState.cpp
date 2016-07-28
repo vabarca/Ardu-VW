@@ -37,6 +37,9 @@ void CAttitudeState::button1ShortPress()
 
 void CAttitudeState::button0LongPress()
 {
+  _pStateMachine->_saveCalib(_pStateMachine->_oG);
+  _pStateMachine->_oGCal = _pStateMachine->_oG;
+  _pStateMachine->_ulTimeStamp = millis();
   _pStateMachine->setState(_pStateMachine->getAttitudeStateCfg());
 }
 
@@ -71,7 +74,6 @@ void CAttitudeState::drawCurrentState()
   _pStateMachine->_u8g.drawBox(x+SQUARE_SIZE,y-SQUARE_SIZE,SQUARE_SIZE,SQUARE_SIZE);
   _pStateMachine->_u8g.drawBox(x-SQUARE_SIZE,y+SQUARE_SIZE,SQUARE_SIZE,SQUARE_SIZE);
   _pStateMachine->_u8g.drawBox(x+SQUARE_SIZE,y+SQUARE_SIZE,SQUARE_SIZE,SQUARE_SIZE);
-
 }
 
 //-----------------------------------------------------------------------------
