@@ -47,8 +47,8 @@ void CAttitudeStateCfg::button1LongPress()
 
 void CAttitudeStateCfg::drawCurrentState()
 {
-  _pStateMachine->_u8g.drawStr(15,45,"System");
-  _pStateMachine->_u8g.drawStr(35,35,"Calibrated!");
+  _pStateMachine->_u8g.drawStr(25,15,"System");
+  _pStateMachine->_u8g.drawStr(15,35,"Calibrated!");
   if(millis() - _pStateMachine->_ulTimeStamp > 1500)
     _pStateMachine->setState(_pStateMachine->getAttitudeState());
 }

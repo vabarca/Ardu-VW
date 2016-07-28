@@ -30,8 +30,10 @@ CStateMachine::CStateMachine():
 	,_ulTimeStamp(millis())
   ,_u8g(U8G_I2C_OPT_FAST)
   ,_fTemperature(0.0f)
+  ,_fTemperatureCalib(0.0f)
   ,_fAltitude(0.0f)
   ,_fAltitudeCalib(0.0f)
+  ,_fAltitudeRef(0.0f)
   ,_fPress(0.0f)
   ,_fHeading(0.0f)
   ,_i16ax(0)
@@ -119,7 +121,8 @@ void  CStateMachine::setup()
 
   //Load calibration
   _loadCalib(_oGCal);
-  _loadAltitudeCalib(_fAltitudeCalib);
+  _loadAltitudeCalib(_fAltitudeRef);
+  _loadTempCalib(_fTemperatureCalib);
 
   //Set kalman staring point
   _oAccelgyro.getMotion6(&_i16ax, &_i16ay, &_i16az, &_i16gx, &_i16gy, &_i16gz);
@@ -178,6 +181,21 @@ void  CStateMachine::_saveCalib(const CData& data)
 void  CStateMachine::_loadAltitudeCalib(float& data)
 {
 	EEPROM_readAnything(EEPROM_CAL_ALTITUDE,data);
+}
+
+//-----------------------------------------------------------------------------
+
+void  CStateMachine::_saveTempCalib(const float& data)
+{
+  EEPROM_writeAnything(EEPROM_CAL_TEMP,data);
+}
+
+
+//-----------------------------------------------------------------------------
+
+void  CStateMachine::_loadTempCalib(float& data)
+{
+	EEPROM_readAnything(EEPROM_CAL_TEMP,data);
 }
 
 //-----------------------------------------------------------------------------
@@ -279,15 +297,16 @@ void CStateMachine::_pressTask()
 
 void CStateMachine::_tempTask()
 {
-  static float fTempOffset(-6.53);
   #ifdef USE_BARO
-    _fTemperature = _oBaro.getTemperature(MS561101BA_OSR_4096) + fTempOffset;
+    _fTemperature = _oBaro.getTemperature(MS561101BA_OSR_4096) +
+    _fTemperatureCalib;
   #else
     static float fM = 0.98;
     static float fTAdj = 36.53f;
     _fTemperature = fM * _fTemperature +
       (1.0 - fM) *
-      (((float)_oAccelgyro.getTemperature() / 340.00f) + fTAdj + fTempOffset);
+      (((float)_oAccelgyro.getTemperature() / 340.00f) + fTAdj +
+      _fTemperatureCalib);
   #endif
 
   SERIAL_PRINT("Temp:");      SERIAL_PRINT("\t");
@@ -300,8 +319,9 @@ void CStateMachine::_tempTask()
 void CStateMachine::_altitudeTask()
 {
   #ifdef USE_BARO
-    _fAltitude = ((pow((SEA_LEVEL_PRESSURE / _fPress),
-        1.0f/5.257f) - 1.0f) * (_fTemperature + 273.15f)) / 0.0065f;
+    _fAltitude = (((pow((SEA_LEVEL_PRESSURE / _fPress),
+        1.0f/5.257f) - 1.0f) * (_fTemperature + 273.15f)) / 0.0065f) +
+        _fAltitudeCalib;
 
     SERIAL_PRINT("Pres:");          SERIAL_PRINT("\t");
     SERIAL_PRINT(_fPress);          SERIAL_PRINT("\t");

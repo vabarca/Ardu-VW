@@ -19,20 +19,21 @@
 
 void CTempStateCfg::button0ShortPress()
 {
-
+  _pStateMachine->_fTemperatureCalib += 0.1f;
 }
 
 //-----------------------------------------------------------------------------
 
 void CTempStateCfg::button1ShortPress()
 {
-
+  _pStateMachine->_fTemperatureCalib -= 0.1f;
 }
 
 //-----------------------------------------------------------------------------
 
 void CTempStateCfg::button0LongPress()
 {
+  _pStateMachine->_saveTempCalib(_pStateMachine->_fTemperatureCalib);
   _pStateMachine->setState(_pStateMachine->getTempState());
 }
 
@@ -40,7 +41,7 @@ void CTempStateCfg::button0LongPress()
 
 void CTempStateCfg::button1LongPress()
 {
-  _pStateMachine->setState(_pStateMachine->getTempState());
+  this->button0LongPress();
 }
 
 //-----------------------------------------------------------------------------

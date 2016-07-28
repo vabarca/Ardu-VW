@@ -111,6 +111,11 @@ const uint8_t EEPROM_CAL_ROLL       (EEPROM_CAL_PITCH + sizeof(float));
 const uint8_t EEPROM_CAL_ALTITUDE   (EEPROM_CAL_ROLL + sizeof(float));
 
 /**
+ * EEPROM memory addresses for temp calibration data
+ */
+const uint8_t EEPROM_CAL_TEMP       (EEPROM_CAL_ALTITUDE + sizeof(float));
+
+/**
  * Display width
  */
 const uint8_t SSD1306_LCDWIDTH      (128);

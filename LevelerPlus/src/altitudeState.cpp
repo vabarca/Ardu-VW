@@ -58,7 +58,7 @@ void CAltitudeState::drawCurrentState()
 
   _pStateMachine->_u8g.setPrintPos(10,35);
   _pStateMachine->_u8g.print(_pStateMachine->_fAltitude -
-    _pStateMachine->_fAltitudeCalib, 1);
+    _pStateMachine->_fAltitudeRef, 1);
   _pStateMachine->_u8g.setPrintPos(85,35);
   _pStateMachine->_u8g.print("m rel");
 

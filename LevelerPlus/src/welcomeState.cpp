@@ -48,7 +48,7 @@ void CWelcomeState::button1LongPress()
 void CWelcomeState::drawCurrentState()
 {
   _pStateMachine->_u8g.drawStr(10,35,"GO for launch!");
-  if(millis() - _pStateMachine->_ulTimeStamp > 3000)
+  if(millis() - _pStateMachine->_ulTimeStamp > 4000)
     _pStateMachine->setState(_pStateMachine->getTempState());
 }
 

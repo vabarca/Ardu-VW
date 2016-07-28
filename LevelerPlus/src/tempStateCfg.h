@@ -24,7 +24,7 @@
 
 class CTempStateCfg : public CTempState{
 public:
-  CTempStateCfg(CStateMachine* pStateMachine):CTempState(pStateMachine){}
+  CTempStateCfg(CStateMachine* pStateMachine):CTempState{pStateMachine}{}
 	~CTempStateCfg(){}
 	void button0ShortPress();
 	void button1ShortPress();

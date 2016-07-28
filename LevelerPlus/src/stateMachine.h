@@ -71,8 +71,10 @@ private:
   U8GLIB_SSD1306_128X64 _u8g;
 
   float                 _fTemperature;
+  float                 _fTemperatureCalib;
   float                 _fAltitude;
   float                 _fAltitudeCalib;
+  float                 _fAltitudeRef;
   float                 _fPress;
   float                 _fHeading;
   float                 _faMovavg_buff[MOVAVG_SIZE];
@@ -87,9 +89,11 @@ private:
   #endif
 
 private:
+  void  _saveTempCalib(const float& data);
+  void  _loadTempCalib(float& data);
   void  _saveAltitudeCalib(const float& data);
-  void  _saveCalib(const CData& data);
   void  _loadAltitudeCalib(float& data);
+  void  _saveCalib(const CData& data);
   void  _loadCalib(CData& data);
   float _getRoll();
   float _getPitch();
