@@ -19,7 +19,7 @@
 
 void CResetState::button0ShortPress()
 {
-  
+
 }
 
 //-----------------------------------------------------------------------------
@@ -31,7 +31,10 @@ void CResetState::button1ShortPress()
 
 //-----------------------------------------------------------------------------
 
-void CResetState::button0LongPress(){}
+void CResetState::button0LongPress()
+{
+  asm volatile ("  jmp 0");
+}
 
 //-----------------------------------------------------------------------------
 

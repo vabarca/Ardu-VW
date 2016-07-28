@@ -17,6 +17,14 @@
 #ifndef __INCLUDES_H__
  #define __INCLUDES_H__
 
+ //-----------------------------------------------------------------------------
+ //---[ Macros: ]---------------------------------------------------------------
+
+ //#define ULTIMATE_DEBOUNCER
+ //#define USE_MAG
+ #define SERIAL_OUTPUT
+ #define USE_BARO
+
 //-----------------------------------------------------------------------------
 //---[ Standard header files: ]------------------------------------------------
 
@@ -54,7 +62,6 @@
 #include "data.h"
 #include "Kalman.h"
 
-#include "stateMachine.h"
 #include "welcomeState.h"
 #include "altitudeState.h"
 #include "altitudeStateCfg.h"

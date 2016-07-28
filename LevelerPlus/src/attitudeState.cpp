@@ -26,7 +26,11 @@ void CAttitudeState::button0ShortPress()
 
 void CAttitudeState::button1ShortPress()
 {
-  _pStateMachine->setState(_pStateMachine->getAltitudeState());
+  #ifdef USE_MAG
+    _pStateMachine->setState(_pStateMachine->getHeadingState());
+  #else
+    _pStateMachine->setState(_pStateMachine->getAltitudeState());
+  #endif
 }
 
 //-----------------------------------------------------------------------------
@@ -40,7 +44,7 @@ void CAttitudeState::button0LongPress()
 
 void CAttitudeState::button1LongPress()
 {
-  _pStateMachine->setState(_pStateMachine->getAttitudeStateCfg());
+  this->button0LongPress();
 }
 
 //-----------------------------------------------------------------------------
@@ -68,8 +72,6 @@ void CAttitudeState::drawCurrentState()
   _pStateMachine->_u8g.drawBox(x-SQUARE_SIZE,y+SQUARE_SIZE,SQUARE_SIZE,SQUARE_SIZE);
   _pStateMachine->_u8g.drawBox(x+SQUARE_SIZE,y+SQUARE_SIZE,SQUARE_SIZE,SQUARE_SIZE);
 
-  if(millis() - _pStateMachine->_ulTimeStamp > 60000)
-    _pStateMachine->setState(_pStateMachine->getTempState());
 }
 
 //-----------------------------------------------------------------------------

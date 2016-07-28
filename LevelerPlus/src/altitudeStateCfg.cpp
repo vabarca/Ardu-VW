@@ -27,11 +27,16 @@ void CAltitudeStateCfg::button1ShortPress(){}
 
 void CAltitudeStateCfg::button0LongPress()
 {
+  _pStateMachine->_saveAltitudeCalib(_pStateMachine->_fAltitude);
+  _pStateMachine->_fAltitudeCalib = _pStateMachine->_fAltitude;
 }
 
 //-----------------------------------------------------------------------------
 
-void CAltitudeStateCfg::button1LongPress(){}
+void CAltitudeStateCfg::button1LongPress()
+{
+  this->button0LongPress();
+}
 
 //-----------------------------------------------------------------------------
 

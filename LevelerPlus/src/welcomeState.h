@@ -13,9 +13,9 @@
 
 class CWelcomeState : public IState{
 private:
-  CStateMachine* _pStateMachine;
+  CStateMachine *_pStateMachine;
 public:
-  CWelcomeState(CStateMachine* pStateMachine):_pStateMachine(pStateMachine){}
+  CWelcomeState(CStateMachine *pStateMachine):_pStateMachine(pStateMachine){}
 	~CWelcomeState(){}
 	void button0ShortPress();
 	void button1ShortPress();

@@ -26,17 +26,26 @@
 class CStateMachine;
 class IState{
 public:
-	virtual ~IState(){};
-	virtual void button0ShortPress() = 0;
-	virtual void button1ShortPress() = 0;
-	virtual void button0LongPress() = 0;
-	virtual void button1LongPress() = 0;
-	virtual void drawCurrentState() = 0;
+  virtual ~IState(){};
+  virtual void button0ShortPress() = 0;
+  virtual void button1ShortPress() = 0;
+  virtual void button0LongPress()  = 0;
+  virtual void button1LongPress()  = 0;
+  virtual void drawCurrentState()  = 0;
 };
 
 //-----------------------------------------------------------------------------
 
 class CStateMachine{
+  friend class CHeadingState;
+  friend class CWelcomeState;
+  friend class CTempState;
+  friend class CTempStateCfg;
+  friend class CAltitudeState;
+  friend class CAltitudeStateCfg;
+  friend class CAttitudeState;
+  friend class CAttitudeStateCfg;
+  friend class CResetState;
 private:
   //State machine
   IState* _pWelcomeState;
@@ -46,9 +55,10 @@ private:
   IState* _pAltitudeStateCfg;
   IState* _pAttitudeState;
   IState* _pAttitudeStateCfg;
+  IState* _pHeadingState;
+  IState* _pResetState;
   IState* _pState;
 
-public:
   unsigned long         _ulTimeStamp;
 
   CData                 _oG;
@@ -83,7 +93,6 @@ private:
   void  _loadCalib(CData& data);
   float _getRoll();
   float _getPitch();
-  void  _reset();
   void  _pushAvg(float val);
   float _getAvg(float * buff, int size);
   void  _attitudeTask();
@@ -93,27 +102,29 @@ private:
   void  _headingTask();
 
 public:
-	CStateMachine();
-	~CStateMachine();
+  CStateMachine();
+  ~CStateMachine();
 
   void  setup();
   void  runCalculus();
 
-	//State machine
-	void  button0ShortPress();
-	void  button1ShortPress();
-	void  button0LongPress();
-	void  button1LongPress();
-	void  drawCurrentState();
+  //State machine
+  void  button0ShortPress();
+  void  button1ShortPress();
+  void  button0LongPress();
+  void  button1LongPress();
+  void  drawCurrentState();
 
-	inline IState* getTempState() const {return _pTempState;}
-	inline IState* getTempStateCfg()const {return _pTempStateCfg;}
-	inline IState* getAltitudeState()const {return _pAltitudeState;}
-	inline IState* getAltitudeStateCfg()const {return _pAltitudeStateCfg;}
-	inline IState* getAttitudeState()const {return _pAttitudeState;}
-	inline IState* getAttitudeStateCfg()const {return _pAttitudeStateCfg;}
+  inline IState* getTempState() const {return _pTempState;}
+  inline IState* getTempStateCfg()const {return _pTempStateCfg;}
+  inline IState* getAltitudeState()const {return _pAltitudeState;}
+  inline IState* getAltitudeStateCfg()const {return _pAltitudeStateCfg;}
+  inline IState* getAttitudeState()const {return _pAttitudeState;}
+  inline IState* getAttitudeStateCfg()const {return _pAttitudeStateCfg;}
+  inline IState* getHeadingState()const {return _pHeadingState;}
+  inline IState* getResetState()const {return _pResetState;}
 
-	inline void setState(IState* pState){this->_pState = pState;}
+  inline void setState(IState* pState){this->_pState = pState;}
 };
 
 //-----------------------------------------------------------------------------

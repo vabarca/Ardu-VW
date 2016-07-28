@@ -11,17 +11,10 @@
  */
 
  //-----------------------------------------------------------------------------
- //---[ Macros: ]---------------------------------------------------------------
-
- //#define ULTIMATE_DEBOUNCER
- #define SERIAL_OUTPUT
- #define USE_BARO
- //#define USE_MAG
-
-//-----------------------------------------------------------------------------
 //---[ Includes: ]-------------------------------------------------------------
 
 #include "includes.h"
+#include "stateMachine.h"
 
 //-----------------------------------------------------------------------------
 //---[ Global variables: ]-----------------------------------------------------
@@ -38,39 +31,7 @@ CStateMachine           goMenu;
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
-
 /*
-void _button1LongPress()
-{
-  switch(geState)
-  {
-  case ESM_RESET:
-    _reset();
-    break;
-  case ESM_ATTITUDE:
-    _saveCalib(goG);
-    goGCal = goG;
-    geState = ESM_CALIB_ATTITUDE;
-    break;
-  case ESM_ALTITUDE:
-    #ifdef USE_BARO
-      _saveAltitudeCalib(gfAltitude);
-      gfAltitudeCalib = gfAltitude;
-      geState = ESM_CALIB_ALTITUDE;
-    #endif
-    break;
-  case ESM_HEADING:         break;
-  case ESM_TEMP:            break;
-  case ESM_CALIB_ATTITUDE:  break;
-  case ESM_CALIB_ALTITUDE:  break;
-  case ESM_WELCOME:         break;
-  default:                  break;
-  }
-}
-
-//-----------------------------------------------------------------------------
-//-----------------------------------------------------------------------------
-
 void _draw()
 {
   static unsigned long timeStamp(millis());
@@ -81,11 +42,6 @@ void _draw()
     case ESM_TEMP:     _showTemp();     timeStamp = millis(); break;
     case ESM_HEADING:  _showHeading();  timeStamp = millis(); break;
     case ESM_RESET:    _showResetMsg(); timeStamp = millis(); break;
-    case ESM_CALIB_ATTITUDE:
-      _showSystCalib();
-      if(millis() - timeStamp > 1500)
-        geState = ESM_ATTITUDE;
-      break;
     case ESM_CALIB_ALTITUDE:
       _showSystCalib();
       if(millis() - timeStamp > 1500)

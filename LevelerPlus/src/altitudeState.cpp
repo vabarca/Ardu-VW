@@ -19,7 +19,11 @@
 
 void CAltitudeState::button0ShortPress()
 {
-  _pStateMachine->setState(_pStateMachine->getAttitudeState());
+  #ifdef USE_MAG
+    _pStateMachine->setState(_pStateMachine->getHeadingState());
+  #else
+    _pStateMachine->setState(_pStateMachine->getAttitudeState());
+  #endif
 }
 
 //-----------------------------------------------------------------------------
@@ -47,18 +51,21 @@ void CAltitudeState::button1LongPress()
 
 void CAltitudeState::drawCurrentState()
 {
-  _pStateMachine->_u8g.setPrintPos(20,25);
+  _pStateMachine->_u8g.setPrintPos(10,15);
+  _pStateMachine->_u8g.print(_pStateMachine->_fAltitude, 1);
+  _pStateMachine->_u8g.setPrintPos(85,15);
+  _pStateMachine->_u8g.print("m");
+
+  _pStateMachine->_u8g.setPrintPos(10,35);
   _pStateMachine->_u8g.print(_pStateMachine->_fAltitude -
     _pStateMachine->_fAltitudeCalib, 1);
-  _pStateMachine->_u8g.setPrintPos(95,25);
-  _pStateMachine->_u8g.print("m");
-  _pStateMachine->_u8g.setPrintPos(20,45);
-  _pStateMachine->_u8g.print(_pStateMachine->_fPress,1);
-  _pStateMachine->_u8g.setPrintPos(95,45);
-  _pStateMachine->_u8g.print("mb");
+  _pStateMachine->_u8g.setPrintPos(85,35);
+  _pStateMachine->_u8g.print("m rel");
 
-  if(millis() - _pStateMachine->_ulTimeStamp > 60000)
-    _pStateMachine->setState(_pStateMachine->getTempState());
+  _pStateMachine->_u8g.setPrintPos(10,55);
+  _pStateMachine->_u8g.print(_pStateMachine->_fPress,1);
+  _pStateMachine->_u8g.setPrintPos(85,55);
+  _pStateMachine->_u8g.print("mb");
 }
 
 //-----------------------------------------------------------------------------

@@ -17,11 +17,17 @@
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
 
-void CHeadingState::button0ShortPress(){}
+void CHeadingState::button0ShortPress()
+{
+  _pStateMachine->setState(_pStateMachine->getAttitudeState());
+}
 
 //-----------------------------------------------------------------------------
 
-void CHeadingState::button1ShortPress(){}
+void CHeadingState::button1ShortPress()
+{
+  _pStateMachine->setState(_pStateMachine->getAltitudeState());
+}
 
 //-----------------------------------------------------------------------------
 
@@ -47,11 +53,7 @@ void CHeadingState::drawCurrentState()
   _pStateMachine->_u8g.setFontPosBaseline();
 
   _pStateMachine->_u8g.setPrintPos(0,10);
-  _pStateMachine->_u8g.print(_pStateMachine->_fHeading);
-
-  SERIAL_PRINT("Orientation: ");
-  SERIAL_PRINT(_pStateMachine->_fHeading * RAD_2_DEG);
-  SERIAL_PRINTLN(" deg");
+  _pStateMachine->_u8g.print(_pStateMachine->_fHeading,1);
 }
 
 //-----------------------------------------------------------------------------

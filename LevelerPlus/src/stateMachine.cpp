@@ -25,6 +25,8 @@ CStateMachine::CStateMachine():
   ,_pAltitudeStateCfg (new CAltitudeStateCfg{this})
 	,_pAttitudeState (new CAttitudeState{this})
 	,_pAttitudeStateCfg (new CAttitudeStateCfg{this})
+  ,_pHeadingState(new CHeadingState{this})
+  ,_pResetState(new CResetState{this})
 	,_ulTimeStamp(millis())
   ,_u8g(U8G_I2C_OPT_FAST)
   ,_fTemperature(0.0f)
@@ -52,6 +54,8 @@ CStateMachine::~CStateMachine()
 	delete _pAltitudeState;
 	delete _pAttitudeState;
 	delete _pTempStateCfg;
+  delete _pHeadingState;
+  delete _pResetState;
 	delete _pAltitudeStateCfg;
 	delete _pAttitudeStateCfg;
 
@@ -63,6 +67,8 @@ CStateMachine::~CStateMachine()
 	_pTempStateCfg 		  = 0;
 	_pAltitudeStateCfg 	= 0;
 	_pAttitudeStateCfg 	= 0;
+  _pHeadingState      = 0;
+  _pResetState        = 0;
 }
 
 //-----------------------------------------------------------------------------
@@ -88,7 +94,6 @@ void  CStateMachine::setup()
   // initialize accelgyro device
   _oAccelgyro.initialize();
   _oAccelgyro.testConnection();
-
 
 #ifdef USE_MAG
   // Initialize compas device
@@ -144,6 +149,9 @@ void  CStateMachine::drawCurrentState()
 	do {
 		_pState->drawCurrentState();
 	} while(_u8g.nextPage());
+
+  if(millis() - _ulTimeStamp > 60000)
+    setState(getTempState());
 }
 
 //-----------------------------------------------------------------------------
@@ -201,13 +209,6 @@ float CStateMachine::_getPitch()
 
 //-----------------------------------------------------------------------------
 
-void  CStateMachine::_reset()
-{
-	asm volatile ("  jmp 0");
-}
-
-//-----------------------------------------------------------------------------
-
 void  CStateMachine::_pushAvg(float val)
 {
   static int movavg_i(0);
@@ -249,15 +250,15 @@ void  CStateMachine::_attitudeTask()
   _oGDif.pitch  = _oG.pitch - _oGCal.pitch;
 
   SERIAL_PRINT("data:\t");
-  SERIAL_PRINT(gyroXrate); SERIAL_PRINT("\t");
-  SERIAL_PRINT(gyroYrate); SERIAL_PRINT("\t");
-  SERIAL_PRINT(_getRoll()); SERIAL_PRINT("\t");
-  SERIAL_PRINT(_getPitch()); SERIAL_PRINT("\t");
-  SERIAL_PRINT(_oG.roll); SERIAL_PRINT("\t");
-  SERIAL_PRINT(_oG.pitch); SERIAL_PRINT("\t");
-  SERIAL_PRINT(_oGCal.roll); SERIAL_PRINT("\t");
+  SERIAL_PRINT(gyroXrate);    SERIAL_PRINT("\t");
+  SERIAL_PRINT(gyroYrate);    SERIAL_PRINT("\t");
+  SERIAL_PRINT(_getRoll());   SERIAL_PRINT("\t");
+  SERIAL_PRINT(_getPitch());  SERIAL_PRINT("\t");
+  SERIAL_PRINT(_oG.roll);     SERIAL_PRINT("\t");
+  SERIAL_PRINT(_oG.pitch);    SERIAL_PRINT("\t");
+  SERIAL_PRINT(_oGCal.roll);  SERIAL_PRINT("\t");
   SERIAL_PRINT(_oGCal.pitch); SERIAL_PRINT("\t");
-  SERIAL_PRINT(_oGDif.roll); SERIAL_PRINT("\t");
+  SERIAL_PRINT(_oGDif.roll);  SERIAL_PRINT("\t");
   SERIAL_PRINT(_oGDif.pitch); SERIAL_PRINTLN("\t **");
 }
 
@@ -286,9 +287,9 @@ void CStateMachine::_tempTask()
       (((float)_oAccelgyro.getTemperature() / 340.00f) + fTAdj + fTempOffset);
   #endif
 
-    SERIAL_PRINT("Temp: ");
-    SERIAL_PRINT(_fTemperature);
-    SERIAL_PRINTLN(" degC");
+  SERIAL_PRINT("Temp:");      SERIAL_PRINT("\t");
+  SERIAL_PRINT(_fTemperature);SERIAL_PRINT("\t");
+  SERIAL_PRINTLN("degC");
 }
 
 //-----------------------------------------------------------------------------
@@ -299,11 +300,11 @@ void CStateMachine::_altitudeTask()
     _fAltitude = ((pow((SEA_LEVEL_PRESSURE / _fPress),
         1.0f/5.257f) - 1.0f) * (_fTemperature + 273.15f)) / 0.0065f;
 
-    SERIAL_PRINT("Pres: ");
-    SERIAL_PRINT(_fPress);
-    SERIAL_PRINT(" mbar altitude: ");
-    SERIAL_PRINT(_fAltitude);
-    SERIAL_PRINTLN(" m");
+    SERIAL_PRINT("Pres:");          SERIAL_PRINT("\t");
+    SERIAL_PRINT(_fPress);          SERIAL_PRINT("\t");
+    SERIAL_PRINT("mbar altitude:"); SERIAL_PRINT("\t");
+    SERIAL_PRINT(_fAltitude);       SERIAL_PRINT("\t");
+    SERIAL_PRINTLN("m");
   #endif
 }
 
@@ -317,6 +318,10 @@ void CStateMachine::_headingTask()
     _fHeading = atan2(fy, fx);
     if(_fHeading < 0)
       _fHeading += M_PI_D;
+
+    SERIAL_PRINT("Orientation:");       SERIAL_PRINT("\t");
+    SERIAL_PRINT(_fHeading * RAD_2_DEG);SERIAL_PRINT("\t");
+    SERIAL_PRINTLN("deg");
   #endif
 }
 
@@ -326,6 +331,7 @@ void CStateMachine::runCalculus()
 {
   this->_tempTask();
   this->_pressTask();
+  this->_headingTask();
   this->_altitudeTask();
   this->_attitudeTask();
 }
