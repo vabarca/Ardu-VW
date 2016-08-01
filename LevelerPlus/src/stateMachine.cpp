@@ -42,6 +42,7 @@ CStateMachine::CStateMachine():
   ,_i16gx(0)
   ,_i16gy(0)
   ,_i16gz(0)
+  ,_oAccelgyro(MPU60X0{false,0x68})
 
 {
   _pState = _pWelcomeState;
@@ -77,9 +78,6 @@ CStateMachine::~CStateMachine()
 
 void  CStateMachine::setup()
 {
-  // join I2C bus (I2Cdev library doesn't do this automatically)
-  Wire.begin();
-
   // Display configuration
   switch(_u8g.getMode())
   {
@@ -121,7 +119,8 @@ void  CStateMachine::setup()
 
   //Load calibration
   _loadCalib(_oGCal);
-  _loadAltitudeCalib(_fAltitudeRef);
+  _loadAltitudeCalib(_fAltitudeCalib);
+  _loadAltitudeRef(_fAltitudeRef);
   _loadTempCalib(_fTemperatureCalib);
 
   //Set kalman staring point
@@ -161,6 +160,26 @@ void  CStateMachine::drawCurrentState()
 }
 
 //-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
+
+void  CStateMachine::_restoreSettings()
+{
+  //Show pre-reset message
+  _u8g.firstPage();
+  do {
+    _u8g.drawStr(25,25,"Resetting");
+    _u8g.drawStr(25,45,"system...");
+  } while(_u8g.nextPage());
+
+	//Clear eeprom
+	for (unsigned int i = 0 ; i < EEPROM.length() ;i++)
+    EEPROM.write(i, 0);
+
+  // Reset System
+  asm volatile ("jmp 0");
+}
+
+//-----------------------------------------------------------------------------
 
 //Globals
 void  CStateMachine::_saveAltitudeCalib(const float& data)
@@ -170,17 +189,32 @@ void  CStateMachine::_saveAltitudeCalib(const float& data)
 
 //-----------------------------------------------------------------------------
 
-void  CStateMachine::_saveCalib(const CData& data)
+void  CStateMachine::_loadAltitudeCalib(float& data)
 {
-  EEPROM_writeAnything(EEPROM_CAL_PITCH,data.pitch);
-  EEPROM_writeAnything(EEPROM_CAL_ROLL,data.roll);
+	EEPROM_readAnything(EEPROM_CAL_ALTITUDE,data);
 }
 
 //-----------------------------------------------------------------------------
 
-void  CStateMachine::_loadAltitudeCalib(float& data)
+//Globals
+void  CStateMachine::_saveAltitudeRef(const float& data)
 {
-	EEPROM_readAnything(EEPROM_CAL_ALTITUDE,data);
+	EEPROM_writeAnything(EEPROM_REF_ALTITUDE,data);
+}
+
+//-----------------------------------------------------------------------------
+
+void  CStateMachine::_loadAltitudeRef(float& data)
+{
+	EEPROM_readAnything(EEPROM_REF_ALTITUDE,data);
+}
+
+//-----------------------------------------------------------------------------
+
+void  CStateMachine::_saveCalib(const CData& data)
+{
+  EEPROM_writeAnything(EEPROM_CAL_PITCH,data.pitch);
+  EEPROM_writeAnything(EEPROM_CAL_ROLL,data.roll);
 }
 
 //-----------------------------------------------------------------------------
@@ -299,7 +333,7 @@ void CStateMachine::_tempTask()
 {
   #ifdef USE_BARO
     _fTemperature = _oBaro.getTemperature(MS561101BA_OSR_4096) +
-    _fTemperatureCalib;
+      _fTemperatureCalib;
   #else
     static float fM = 0.98;
     static float fTAdj = 36.53f;
@@ -323,10 +357,12 @@ void CStateMachine::_altitudeTask()
         1.0f/5.257f) - 1.0f) * (_fTemperature + 273.15f)) / 0.0065f) +
         _fAltitudeCalib;
 
-    SERIAL_PRINT("Pres:");          SERIAL_PRINT("\t");
-    SERIAL_PRINT(_fPress);          SERIAL_PRINT("\t");
-    SERIAL_PRINT("mbar altitude:"); SERIAL_PRINT("\t");
-    SERIAL_PRINT(_fAltitude);       SERIAL_PRINT("\t");
+    SERIAL_PRINT("Pres:");             SERIAL_PRINT("\t");
+    SERIAL_PRINT(_fPress);             SERIAL_PRINT("\t");
+    SERIAL_PRINT("mbar altitude:");    SERIAL_PRINT("\t");
+    SERIAL_PRINT(_fAltitude);          SERIAL_PRINT("\t");
+    SERIAL_PRINT("m altitude calib:"); SERIAL_PRINT("\t");
+    SERIAL_PRINT(_fAltitudeCalib);     SERIAL_PRINT("\t");
     SERIAL_PRINTLN("m");
   #endif
 }

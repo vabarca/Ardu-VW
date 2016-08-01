@@ -26,7 +26,7 @@ void CTempState::button0ShortPress()
 
 void CTempState::button1ShortPress()
 {
-  _pStateMachine->setState(_pStateMachine->getAttitudeState());
+  _pStateMachine->setState(_pStateMachine->getResetState());
 }
 
 //-----------------------------------------------------------------------------

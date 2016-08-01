@@ -19,7 +19,7 @@
 
 void CAttitudeState::button0ShortPress()
 {
-  _pStateMachine->setState(_pStateMachine->getTempState());
+  _pStateMachine->setState(_pStateMachine->getResetState());
 }
 
 //-----------------------------------------------------------------------------

@@ -93,6 +93,8 @@ private:
   void  _loadTempCalib(float& data);
   void  _saveAltitudeCalib(const float& data);
   void  _loadAltitudeCalib(float& data);
+  void  _saveAltitudeRef(const float& data);
+  void  _loadAltitudeRef(float& data);
   void  _saveCalib(const CData& data);
   void  _loadCalib(CData& data);
   float _getRoll();
@@ -104,6 +106,7 @@ private:
   void  _tempTask();
   void  _altitudeTask();
   void  _headingTask();
+  void  _restoreSettings();
 
 public:
   CStateMachine();

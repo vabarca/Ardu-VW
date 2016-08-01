@@ -22,7 +22,7 @@
 
  //#define ULTIMATE_DEBOUNCER
  //#define USE_MAG
- #define SERIAL_OUTPUT
+ //#define SERIAL_OUTPUT
  #define USE_BARO
 
 //-----------------------------------------------------------------------------

@@ -38,6 +38,9 @@ void setup()
   //Initialize serial port
   SERIAL_BEGIN;
 
+  // join I2C bus (I2Cdev library doesn't do this automatically)
+  Wire.begin();
+
   //Initialize System
   goMenu.setup();
 

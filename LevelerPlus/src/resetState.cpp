@@ -19,32 +19,36 @@
 
 void CResetState::button0ShortPress()
 {
-
+  _pStateMachine->setState(_pStateMachine->getTempState());
 }
 
 //-----------------------------------------------------------------------------
 
 void CResetState::button1ShortPress()
 {
-
+  _pStateMachine->setState(_pStateMachine->getAttitudeState());
 }
 
 //-----------------------------------------------------------------------------
 
 void CResetState::button0LongPress()
 {
-  asm volatile ("  jmp 0");
+  _pStateMachine->_restoreSettings();
 }
 
 //-----------------------------------------------------------------------------
 
-void CResetState::button1LongPress(){}
+void CResetState::button1LongPress()
+{
+  this->button0LongPress();
+}
 
 //-----------------------------------------------------------------------------
 
 void CResetState::drawCurrentState()
 {
-  _pStateMachine->_u8g.drawStr(10,40,"Reset System?");
+  _pStateMachine->_u8g.drawStr(3,25,"Restore factory");
+  _pStateMachine->_u8g.drawStr(25,45,"settings?");
 }
 
 //-----------------------------------------------------------------------------

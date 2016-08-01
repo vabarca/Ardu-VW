@@ -44,25 +44,26 @@ void CAltitudeState::button0LongPress()
 
 void CAltitudeState::button1LongPress()
 {
-  _pStateMachine->setState(_pStateMachine->getAltitudeStateCfg());
+  _pStateMachine->_saveAltitudeRef(_pStateMachine->_fAltitude);
+  _pStateMachine->_fAltitudeRef = _pStateMachine->_fAltitude;
 }
 
 //-----------------------------------------------------------------------------
 
 void CAltitudeState::drawCurrentState()
 {
-  _pStateMachine->_u8g.setPrintPos(10,15);
+  _pStateMachine->_u8g.setPrintPos(15,15);
   _pStateMachine->_u8g.print(_pStateMachine->_fAltitude, 1);
   _pStateMachine->_u8g.setPrintPos(85,15);
   _pStateMachine->_u8g.print("m");
 
-  _pStateMachine->_u8g.setPrintPos(10,35);
+  _pStateMachine->_u8g.setPrintPos(15,35);
   _pStateMachine->_u8g.print(_pStateMachine->_fAltitude -
     _pStateMachine->_fAltitudeRef, 1);
   _pStateMachine->_u8g.setPrintPos(85,35);
   _pStateMachine->_u8g.print("m rel");
 
-  _pStateMachine->_u8g.setPrintPos(10,55);
+  _pStateMachine->_u8g.setPrintPos(15,55);
   _pStateMachine->_u8g.print(_pStateMachine->_fPress,1);
   _pStateMachine->_u8g.setPrintPos(85,55);
   _pStateMachine->_u8g.print("mb");

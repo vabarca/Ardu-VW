@@ -34,7 +34,6 @@ void CAltitudeStateCfg::button1ShortPress()
 void CAltitudeStateCfg::button0LongPress()
 {
   _pStateMachine->_saveAltitudeCalib(_pStateMachine->_fAltitudeCalib);
-  _pStateMachine->_fAltitudeRef = _pStateMachine->_fAltitudeCalib;
   _pStateMachine->setState(_pStateMachine->getAltitudeState());
 }
 
