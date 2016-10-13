@@ -49,7 +49,7 @@ void CAttitudeStateCfg::drawCurrentState()
 {
   _pStateMachine->_u8g.drawStr(30,25,"System");
   _pStateMachine->_u8g.drawStr(15,45,"Calibrated!");
-  if(millis() - _pStateMachine->_ulTimeStamp > 1500)
+  if(millis() - _pStateMachine->_ulTimeStamp > 1000)
     _pStateMachine->setState(_pStateMachine->getAttitudeState());
 }
 

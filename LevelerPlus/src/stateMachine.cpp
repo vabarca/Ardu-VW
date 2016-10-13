@@ -27,6 +27,7 @@ CStateMachine::CStateMachine():
   ,_pAttitudeStateCfg (new CAttitudeStateCfg{this})
   ,_pHeadingState(new CHeadingState{this})
   ,_pResetState(new CResetState{this})
+  ,_pPressureState(new CPressureState{this})
 	,_ulTimeStamp(millis())
   ,_u8g(U8G_I2C_OPT_FAST)
   ,_fTemperature(0.0f)
@@ -61,6 +62,7 @@ CStateMachine::~CStateMachine()
   delete _pHeadingState;
   delete _pResetState;
 	delete _pAltitudeStateCfg;
+  delete _pPressureState;
 
 	_pState 			      = 0;
 	_pWelcomeState 		  = 0;
@@ -72,6 +74,7 @@ CStateMachine::~CStateMachine()
 	_pAltitudeStateCfg 	= 0;
   _pHeadingState      = 0;
   _pResetState        = 0;
+  _pPressureState     = 0;
 }
 
 //-----------------------------------------------------------------------------
@@ -156,7 +159,7 @@ void  CStateMachine::drawCurrentState()
 	} while(_u8g.nextPage());
 
   if(millis() - _ulTimeStamp > 60000)
-    setState(getTempState());
+    setState(getAltitudeState());
 }
 
 //-----------------------------------------------------------------------------

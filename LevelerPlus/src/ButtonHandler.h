@@ -29,7 +29,7 @@
 
 //---[ Global defines: ]-------------------------------------------------------
 
-#define DEFAULT_LONGPRESS_LEN    25  // Min nr of loops for a long press
+#define DEFAULT_LONGPRESS_LEN    15  // Min nr of loops for a long press
 
 enum eEvent
 {
@@ -90,4 +90,3 @@ class CTheUltimateDebouncer
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
-

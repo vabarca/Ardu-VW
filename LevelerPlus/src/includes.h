@@ -65,12 +65,14 @@
 #include "welcomeState.h"
 #include "altitudeState.h"
 #include "altitudeStateCfg.h"
+#include "altitudeRelState.h"
 #include "attitudeState.h"
 #include "attitudeStateCfg.h"
 #include "tempState.h"
 #include "tempStateCfg.h"
 #include "headingState.h"
 #include "resetState.h"
+#include "pressureState.h"
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------

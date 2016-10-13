@@ -2,8 +2,8 @@
 //-----------------------------------------------------------------------------
 
 /** @file  altitudeState.cpp
- *  @date  July, 2016
- *  @brief Altitude State class
+ *  @date  Octubre, 2016
+ *  @brief Altitude state class
  *
  *
  *  @author Cooked by Vicente A. (TT)
@@ -19,18 +19,14 @@
 
 void CAltitudeState::button0ShortPress()
 {
-  #ifdef USE_MAG
-    _pStateMachine->setState(_pStateMachine->getHeadingState());
-  #else
-    _pStateMachine->setState(_pStateMachine->getAttitudeState());
-  #endif
+  _pStateMachine->setState(_pStateMachine->getAltitudeRelState());
 }
 
 //-----------------------------------------------------------------------------
 
 void CAltitudeState::button1ShortPress()
 {
-  _pStateMachine->setState(_pStateMachine->getTempState());
+  _pStateMachine->setState(_pStateMachine->getResetState());
 }
 
 //-----------------------------------------------------------------------------
@@ -44,29 +40,17 @@ void CAltitudeState::button0LongPress()
 
 void CAltitudeState::button1LongPress()
 {
-  _pStateMachine->_saveAltitudeRef(_pStateMachine->_fAltitude);
-  _pStateMachine->_fAltitudeRef = _pStateMachine->_fAltitude;
+  _pStateMachine->setState(_pStateMachine->getAltitudeStateCfg());
 }
 
 //-----------------------------------------------------------------------------
 
 void CAltitudeState::drawCurrentState()
 {
-  _pStateMachine->_u8g.setPrintPos(15,15);
-  _pStateMachine->_u8g.print(_pStateMachine->_fAltitude, 1);
-  _pStateMachine->_u8g.setPrintPos(85,15);
-  _pStateMachine->_u8g.print("m");
-
   _pStateMachine->_u8g.setPrintPos(15,35);
-  _pStateMachine->_u8g.print(_pStateMachine->_fAltitude -
-    _pStateMachine->_fAltitudeRef, 1);
+  _pStateMachine->_u8g.print(_pStateMachine->_fAltitude, 1);
   _pStateMachine->_u8g.setPrintPos(85,35);
-  _pStateMachine->_u8g.print("m rel");
-
-  _pStateMachine->_u8g.setPrintPos(15,55);
-  _pStateMachine->_u8g.print(_pStateMachine->_fPress,1);
-  _pStateMachine->_u8g.setPrintPos(85,55);
-  _pStateMachine->_u8g.print("mb");
+  _pStateMachine->_u8g.print("m");
 }
 
 //-----------------------------------------------------------------------------

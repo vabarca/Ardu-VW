@@ -1,9 +1,9 @@
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
 
-/** @file  tempState.cpp
+/** @file  welcomeState.cpp
  *  @date  July, 2016
- *  @brief
+ *  @brief welcome state class
  *
  *
  *  @author Cooked by Vicente A. (TT)
@@ -19,28 +19,28 @@
 
 void CWelcomeState::button0ShortPress()
 {
-  _pStateMachine->setState(_pStateMachine->getTempState());
+  _pStateMachine->setState(_pStateMachine->getAltitudeState());
 }
 
 //-----------------------------------------------------------------------------
 
 void CWelcomeState::button1ShortPress()
 {
-  _pStateMachine->setState(_pStateMachine->getTempState());
+  _pStateMachine->setState(_pStateMachine->getAltitudeState());
 }
 
 //-----------------------------------------------------------------------------
 
 void CWelcomeState::button0LongPress()
 {
-  _pStateMachine->setState(_pStateMachine->getTempState());
+  _pStateMachine->setState(_pStateMachine->getAltitudeState());
 }
 
 //-----------------------------------------------------------------------------
 
 void CWelcomeState::button1LongPress()
 {
-  _pStateMachine->setState(_pStateMachine->getTempState());
+  _pStateMachine->setState(_pStateMachine->getAltitudeState());
 }
 
 //-----------------------------------------------------------------------------
@@ -48,8 +48,8 @@ void CWelcomeState::button1LongPress()
 void CWelcomeState::drawCurrentState()
 {
   _pStateMachine->_u8g.drawStr(10,35,"GO for launch!");
-  if(millis() - _pStateMachine->_ulTimeStamp > 4000)
-    _pStateMachine->setState(_pStateMachine->getTempState());
+  if(millis() - _pStateMachine->_ulTimeStamp > 3000)
+    _pStateMachine->setState(_pStateMachine->getAltitudeState());
 }
 
 //-----------------------------------------------------------------------------

@@ -2,8 +2,8 @@
 //-----------------------------------------------------------------------------
 
 /** @file  altitudeState.h
- *  @date  July, 2016
- *  @brief Altitude State class
+ *  @date  Octubre, 2016
+ *  @brief Altitude state class
  *
  *
  *  @author Cooked by Vicente A. (TT)

@@ -43,9 +43,11 @@ class CStateMachine{
   friend class CTempStateCfg;
   friend class CAltitudeState;
   friend class CAltitudeStateCfg;
+  friend class CAltitudeRelState;
   friend class CAttitudeState;
   friend class CAttitudeStateCfg;
   friend class CResetState;
+  friend class CPressureState;
 private:
   //State machine
   IState* _pWelcomeState;
@@ -53,10 +55,12 @@ private:
   IState* _pTempStateCfg;
   IState* _pAltitudeState;
   IState* _pAltitudeStateCfg;
+  IState* _pAltitudeRelState;
   IState* _pAttitudeState;
   IState* _pAttitudeStateCfg;
   IState* _pHeadingState;
   IState* _pResetState;
+  IState* _pPressureState;
   IState* _pState;
 
   unsigned long         _ulTimeStamp;
@@ -126,10 +130,12 @@ public:
   inline IState* getTempStateCfg()const {return _pTempStateCfg;}
   inline IState* getAltitudeState()const {return _pAltitudeState;}
   inline IState* getAltitudeStateCfg()const {return _pAltitudeStateCfg;}
+  inline IState* getAltitudeRelState()const {return _pAltitudeRelState;}
   inline IState* getAttitudeState()const {return _pAttitudeState;}
   inline IState* getAttitudeStateCfg()const {return _pAttitudeStateCfg;}
   inline IState* getHeadingState()const {return _pHeadingState;}
   inline IState* getResetState()const {return _pResetState;}
+  inline IState* getPressureState()const {return _pPressureState;}
 
   inline void setState(IState* pState){this->_pState = pState;}
 };
