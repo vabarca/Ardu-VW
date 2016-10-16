@@ -29,7 +29,7 @@
 
 //---[ Global defines: ]-------------------------------------------------------
 
-#define DEFAULT_LONGPRESS_LEN    25  // Min nr of loops for a long press
+#define DEFAULT_LONGPRESS_LEN    30  // Min nr of loops for a long press
 
 enum eEvent
 {
@@ -45,9 +45,10 @@ class CButtonHandler
   protected:
 
     boolean         _was_pressed;     // previous state
-    int             _pressed_counter;     // press running duration
-    const uint8_t   _pin;           // pin to which button is connected
-    const int       _longpress_len; // longpress duration
+    boolean         _generated_event; // generated event before relese button
+    int             _pressed_counter; // press running duration
+    const uint8_t   _pin;             // pin to which button is connected
+    const int       _longpress_len;   // longpress duration
     long            _lastLoopTime;
 
   public:
