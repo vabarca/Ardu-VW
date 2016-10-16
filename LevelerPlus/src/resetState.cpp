@@ -2,7 +2,7 @@
 //-----------------------------------------------------------------------------
 
 /** @file  resetState.cpp
- *  @date  July, 2016
+ *  @date  Octubre, 2016
  *  @brief
  *
  *
@@ -47,8 +47,17 @@ void CResetState::button1LongPress()
 
 void CResetState::drawCurrentState()
 {
-  _pStateMachine->_u8g.drawStr(3,25,"Restore factory");
-  _pStateMachine->_u8g.drawStr(25,45,"settings?");
+  //THIS LINE MUST BE UNCOMMENTED IF THIS IS THE DEFAULT STATE
+  //_pStateMachine->_ulTimeStamp = millis();
+
+  _pStateMachine->_setDrawNumberLines(2);
+  _pStateMachine->_u8g.drawStr(25,
+    (u8g_int_t)_pStateMachine->_getDrawRowPos(0),
+    "Reset");
+
+  _pStateMachine->_u8g.drawStr(15,
+    (u8g_int_t)_pStateMachine->_getDrawRowPos(1),
+    "system?");
 }
 
 //-----------------------------------------------------------------------------

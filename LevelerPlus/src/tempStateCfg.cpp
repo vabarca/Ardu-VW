@@ -2,7 +2,7 @@
 //-----------------------------------------------------------------------------
 
 /** @file  tempState.cpp
- *  @date  July, 2016
+ *  @date  Octubre, 2016
  *  @brief
  *
  *
@@ -48,8 +48,10 @@ void CTempStateCfg::button1LongPress()
 
 void CTempStateCfg::drawCurrentState()
 {
-  _pStateMachine->_u8g.setPrintPos(120,10);
-  _pStateMachine->_u8g.print('*');
+  _pStateMachine->_setDrawNumberLines(2);
+  _pStateMachine->_u8g.drawStr(110,
+    (u8g_int_t)_pStateMachine->_getDrawRowPos(1),
+    "*");
   CTempState::drawCurrentState();
 }
 

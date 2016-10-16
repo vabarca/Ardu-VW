@@ -2,7 +2,7 @@
 //-----------------------------------------------------------------------------
 
 /** @file  buttonhandler.cpp
- *  @date  July, 2016
+ *  @date  Octubre, 2016
  *  @brief
  *
  *
@@ -48,7 +48,7 @@ eEvent CButtonHandler::handle()
 {
   eEvent event (EV_NONE);
 
-  if(millis() - _lastLoopTime < 30)
+  if(millis() - _lastLoopTime < 20)
     return event;
 
   _lastLoopTime = millis();

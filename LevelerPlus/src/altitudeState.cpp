@@ -19,7 +19,7 @@
 
 void CAltitudeState::button0ShortPress()
 {
-  _pStateMachine->setState(_pStateMachine->getAltitudeRelState());
+  _pStateMachine->setState(_pStateMachine->getPressureState());
 }
 
 //-----------------------------------------------------------------------------
@@ -47,10 +47,18 @@ void CAltitudeState::button1LongPress()
 
 void CAltitudeState::drawCurrentState()
 {
-  _pStateMachine->_u8g.setPrintPos(15,35);
+  //THIS LINE MUST BE UNCOMMENTED IF THIS IS THE DEFAULT STATE
+  _pStateMachine->_ulTimeStamp = millis();
+
+  _pStateMachine->_setDrawNumberLines(2);
+  _pStateMachine->_u8g.setPrintPos(
+    (u8g_int_t)_pStateMachine->_getFloatDrawColPos(_pStateMachine->_fAltitude),
+    (u8g_int_t)_pStateMachine->_getDrawRowPos(0));
   _pStateMachine->_u8g.print(_pStateMachine->_fAltitude, 1);
-  _pStateMachine->_u8g.setPrintPos(60,55);
-  _pStateMachine->_u8g.print("m");
+
+  _pStateMachine->_u8g.drawStr(20,
+    (u8g_int_t)_pStateMachine->_getDrawRowPos(1),
+    "Alt(m)");
 }
 
 //-----------------------------------------------------------------------------

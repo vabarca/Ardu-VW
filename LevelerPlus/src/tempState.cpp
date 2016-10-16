@@ -2,7 +2,7 @@
 //-----------------------------------------------------------------------------
 
 /** @file  tempState.cpp
- *  @date  July, 2016
+ *  @date  Octubre, 2016
  *  @brief
  *
  *
@@ -47,7 +47,9 @@ void CTempState::button1LongPress()
 
 void CTempState::drawCurrentState()
 {
-  _pStateMachine->_ulTimeStamp = millis();
+  //THIS LINE MUST BE UNCOMMENTED IF THIS IS THE DEFAULT STATE
+  //_pStateMachine->_ulTimeStamp = millis();
+
   _pStateMachine->_u8g.setPrintPos(40,35);
   _pStateMachine->_u8g.print(_pStateMachine->_fTemperature,1);
   _pStateMachine->_u8g.setPrintPos(90,35);

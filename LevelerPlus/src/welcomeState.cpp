@@ -2,7 +2,7 @@
 //-----------------------------------------------------------------------------
 
 /** @file  welcomeState.cpp
- *  @date  July, 2016
+ *  @date  Octubre, 2016
  *  @brief welcome state class
  *
  *
@@ -47,7 +47,10 @@ void CWelcomeState::button1LongPress()
 
 void CWelcomeState::drawCurrentState()
 {
-  _pStateMachine->_u8g.drawStr(10,35,"GO for launch!");
+  _pStateMachine->_setDrawNumberLines(1);
+  _pStateMachine->_u8g.drawStr(35,
+    (u8g_int_t)_pStateMachine->_getDrawRowPos(0),
+    "GO!!");
   if(millis() - _pStateMachine->_ulTimeStamp > 3000)
     _pStateMachine->setState(_pStateMachine->getAltitudeState());
 }

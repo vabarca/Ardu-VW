@@ -2,7 +2,7 @@
 //-----------------------------------------------------------------------------
 
 /** @file  pressureState.cpp
- *  @date  July, 2016
+ *  @date  Octubre, 2016
  *  @brief Altitude State class
  *
  *
@@ -26,7 +26,7 @@ void CPressureState::button0ShortPress()
 
 void CPressureState::button1ShortPress()
 {
-  _pStateMachine->setState(_pStateMachine->getAltitudeRelState());
+  _pStateMachine->setState(_pStateMachine->getAltitudeState());
 }
 
 //-----------------------------------------------------------------------------
@@ -45,10 +45,18 @@ void CPressureState::button1LongPress()
 
 void CPressureState::drawCurrentState()
 {
-  _pStateMachine->_u8g.setPrintPos(15,35);
-  _pStateMachine->_u8g.print(_pStateMachine->_fPress,1);
-  _pStateMachine->_u8g.setPrintPos(60,55);
-  _pStateMachine->_u8g.print("mb");
+  //THIS LINE MUST BE UNCOMMENTED IF THIS IS THE DEFAULT STATE
+  //_pStateMachine->_ulTimeStamp = millis();
+
+  _pStateMachine->_setDrawNumberLines(2);
+  _pStateMachine->_u8g.setPrintPos(
+    (u8g_int_t)_pStateMachine->_getFloatDrawColPos(_pStateMachine->_fPress),
+    (u8g_int_t)_pStateMachine->_getDrawRowPos(0));
+  _pStateMachine->_u8g.print(_pStateMachine->_fPress, 1);
+
+  _pStateMachine->_u8g.drawStr(5,
+    (u8g_int_t)_pStateMachine->_getDrawRowPos(1),
+    "Pres(mb)");
 }
 
 //-----------------------------------------------------------------------------

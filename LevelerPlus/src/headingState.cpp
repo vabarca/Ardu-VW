@@ -41,6 +41,9 @@ void CHeadingState::button1LongPress(){}
 
 void CHeadingState::drawCurrentState()
 {
+  //THIS LINE MUST BE UNCOMMENTED IF THIS IS THE DEFAULT STATE
+  //_pStateMachine->_ulTimeStamp = millis();
+
   _pStateMachine->_u8g.drawCircle(64, 32, 24);
 
   uint8_t xN((uint8_t)(24*sin(M_PI_D - _pStateMachine->_fHeading)));

@@ -2,7 +2,7 @@
 //-----------------------------------------------------------------------------
 
 /** @file  stateMachine.h
- *  @date  July, 2016
+ *  @date  Octubre, 2016
  *  @brief Main application
  *
  *
@@ -83,6 +83,7 @@ private:
   float                 _fHeading;
   float                 _faMovavg_buff[MOVAVG_SIZE];
   int16_t               _i16ax, _i16ay, _i16az, _i16gx, _i16gy, _i16gz;
+  uint8_t               _ui8DrawNumberLines;
 
   MPU60X0               _oAccelgyro;
   #ifdef USE_BARO
@@ -93,24 +94,28 @@ private:
   #endif
 
 private:
-  void  _saveTempCalib(const float& data);
-  void  _loadTempCalib(float& data);
-  void  _saveAltitudeCalib(const float& data);
-  void  _loadAltitudeCalib(float& data);
-  void  _saveAltitudeRef(const float& data);
-  void  _loadAltitudeRef(float& data);
-  void  _saveCalib(const CData& data);
-  void  _loadCalib(CData& data);
-  float _getRoll();
-  float _getPitch();
-  void  _pushAvg(float val);
-  float _getAvg(float * buff, int size);
-  void  _attitudeTask();
-  void  _pressTask();
-  void  _tempTask();
-  void  _altitudeTask();
-  void  _headingTask();
-  void  _restoreSettings();
+  void    _saveTempCalib(const float& data);
+  void    _loadTempCalib(float& data);
+  void    _saveAltitudeCalib(const float& data);
+  void    _loadAltitudeCalib(float& data);
+  void    _saveAltitudeRef(const float& data);
+  void    _loadAltitudeRef(float& data);
+  void    _saveCalib(const CData& data);
+  void    _loadCalib(CData& data);
+  float   _getRoll();
+  float   _getPitch();
+  void    _pushAvg(float val);
+  float   _getAvg(float * buff, int size);
+  void    _attitudeTask();
+  void    _pressTask();
+  void    _tempTask();
+  void    _altitudeTask();
+  void    _headingTask();
+  void    _restoreSettings();
+  uint8_t _getFloatDrawColPos(const float& data);
+  uint8_t _getDrawRowPos(const uint8_t line);
+  inline void    _setDrawNumberLines(uint8_t value)
+  {_ui8DrawNumberLines = value-1;}
 
 public:
   CStateMachine();

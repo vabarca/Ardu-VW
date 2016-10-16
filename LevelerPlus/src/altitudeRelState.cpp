@@ -2,7 +2,7 @@
 //-----------------------------------------------------------------------------
 
 /** @file  altitudeRelState.cpp
- *  @date  July, 2016
+ *  @date  Octubre, 2016
  *  @brief Altitude State class
  *
  *
@@ -49,11 +49,21 @@ void CAltitudeRelState::button1LongPress()
 
 void CAltitudeRelState::drawCurrentState()
 {
-  _pStateMachine->_u8g.setPrintPos(15,35);
-  _pStateMachine->_u8g.print(_pStateMachine->_fAltitude -
-    _pStateMachine->_fAltitudeRef, 1);
-  _pStateMachine->_u8g.setPrintPos(60,55);
-  _pStateMachine->_u8g.print("m rel");
+  //THIS LINE MUST BE UNCOMMENTED IF THIS IS THE DEFAULT STATE
+  //_pStateMachine->_ulTimeStamp = millis();
+
+  float fTemp (_pStateMachine->_fAltitude -
+    _pStateMachine->_fAltitudeRef);
+
+  _pStateMachine->_setDrawNumberLines(2);
+  _pStateMachine->_u8g.setPrintPos(
+    (u8g_int_t)_pStateMachine->_getFloatDrawColPos(fTemp),
+    (u8g_int_t)_pStateMachine->_getDrawRowPos(0));
+  _pStateMachine->_u8g.print(fTemp, 1);
+
+  _pStateMachine->_u8g.drawStr(0,
+    (u8g_int_t)_pStateMachine->_getDrawRowPos(1),
+    "Alt rel(m)");
 }
 
 //-----------------------------------------------------------------------------

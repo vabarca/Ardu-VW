@@ -2,7 +2,7 @@
 //-----------------------------------------------------------------------------
 
 /** @file  stateMachine.cpp
- *  @date  July, 2016
+ *  @date  Octubre, 2016
  *  @brief
  *
  *
@@ -48,6 +48,7 @@ CStateMachine::CStateMachine():
   ,_i16gx(0)
   ,_i16gy(0)
   ,_i16gz(0)
+  ,_ui8DrawNumberLines(1)
   ,_oAccelgyro(MPU60X0{false,0x68})
 
 {
@@ -104,8 +105,10 @@ void  CStateMachine::setup()
 
   _u8g.setFontPosBaseline();
   //_u8g.setFont(u8g_font_fub11);
-  _u8g.setFont(u8g_font_unifont);
-  //_u8g.setFont(u8g_font_9x18);
+  //_u8g.setFont(u8g_font_unifont);
+  //_u8g.setFont(u8g_font_gdb17);
+  //_u8g.setFont(u8g_font_gdr20);
+  _u8g.setFont(u8g_font_courB18r);
   //_u8g.setRot180();
 
   // initialize accelgyro device
@@ -120,6 +123,9 @@ void  CStateMachine::setup()
   // Single mode conversion was used in calibration, now set continuous mode
   _oCompass.setMode(0);
 #endif
+
+  //Set initial number of lines to be displayed
+  _setDrawNumberLines(1);
 
 #ifdef USE_BARO
   //initialize baro
@@ -181,8 +187,7 @@ void  CStateMachine::_restoreSettings()
   //Show pre-reset message
   _u8g.firstPage();
   do {
-    _u8g.drawStr(25,25,"Resetting");
-    _u8g.drawStr(25,45,"system...");
+    _u8g.drawStr(5,35,"wait...");
   } while(_u8g.nextPage());
 
 	//Clear eeprom
@@ -398,6 +403,29 @@ void CStateMachine::_headingTask()
   #endif
 }
 
+//-----------------------------------------------------------------------------
+
+uint8_t CStateMachine::_getFloatDrawColPos(const float& data)
+{
+  int iCol = 14;
+  float fTemp = abs(data);
+  if(fTemp < 1000) iCol+=8;
+  if(fTemp < 100) iCol+=8;
+  if(fTemp < 10) iCol+=8;
+  if(data < 0)iCol-=10;
+  return iCol;
+}
+
+//-----------------------------------------------------------------------------
+
+uint8_t CStateMachine::_getDrawRowPos(const uint8_t line)
+{
+  static const uint8_t ibaseRow[3] = {35,27,20};
+  static const uint8_t igapRow[3] = {0,30,22};
+  return (ibaseRow[_ui8DrawNumberLines] + (line*igapRow[_ui8DrawNumberLines]));
+}
+
+//-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
 
 void CStateMachine::runCalculus()

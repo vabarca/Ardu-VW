@@ -2,7 +2,7 @@
 //-----------------------------------------------------------------------------
 
 /** @file  attitudeState.cpp
- *  @date  July, 2016
+ *  @date  Octubre, 2016
  *  @brief Attitude State class
  *
  *
@@ -50,6 +50,9 @@ void CAttitudeState::button1LongPress()
 
 void CAttitudeState::drawCurrentState()
 {
+  //THIS LINE MUST BE UNCOMMENTED IF THIS IS THE DEFAULT STATE
+  //_pStateMachine->_ulTimeStamp = millis();
+
   static int y {SSD1306_LCDHEIGHT_MED};
   static int x {SSD1306_LCDWIDTH_MED};
   static const int SQUARE_SIZE(8);

@@ -2,7 +2,7 @@
 //-----------------------------------------------------------------------------
 
 /** @file  attitudeStateCfg.cpp
- *  @date  July, 2016
+ *  @date  Octubre, 2016
  *  @brief Altitude State class
  *
  *
@@ -47,8 +47,10 @@ void CAttitudeStateCfg::button1LongPress()
 
 void CAttitudeStateCfg::drawCurrentState()
 {
-  _pStateMachine->_u8g.drawStr(30,25,"System");
-  _pStateMachine->_u8g.drawStr(15,45,"Calibrated!");
+  _pStateMachine->_setDrawNumberLines(1);
+  _pStateMachine->_u8g.drawStr(15,
+    (u8g_int_t)_pStateMachine->_getDrawRowPos(0),
+    "Fix it!");
   if(millis() - _pStateMachine->_ulTimeStamp > 1000)
     _pStateMachine->setState(_pStateMachine->getAttitudeState());
 }

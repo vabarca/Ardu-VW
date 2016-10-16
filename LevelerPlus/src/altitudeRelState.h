@@ -2,7 +2,7 @@
 //-----------------------------------------------------------------------------
 
 /** @file  altitudeRelState.h
- *  @date  July, 2016
+ *  @date  Octubre, 2016
  *  @brief Relative altitude State class
  *
  *
