@@ -49,7 +49,7 @@ void CAltitudeState::drawCurrentState()
 {
   _pStateMachine->_u8g.setPrintPos(15,35);
   _pStateMachine->_u8g.print(_pStateMachine->_fAltitude, 1);
-  _pStateMachine->_u8g.setPrintPos(85,35);
+  _pStateMachine->_u8g.setPrintPos(60,55);
   _pStateMachine->_u8g.print("m");
 }
 

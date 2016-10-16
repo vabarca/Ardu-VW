@@ -54,7 +54,7 @@ void CAttitudeState::drawCurrentState()
   static int x {SSD1306_LCDWIDTH_MED};
   static const int SQUARE_SIZE(8);
   static const int SQUARE_SIZE_MED(SQUARE_SIZE/2);
-  static const int ZOOM_FACTOR(2.0f);
+  static const int ZOOM_FACTOR(3.0f);
 
   _pStateMachine->_u8g.drawBox(0,SSD1306_LCDHEIGHT_MED-2,SSD1306_LCDWIDTH,SQUARE_SIZE_MED);
   _pStateMachine->_u8g.drawBox(SSD1306_LCDWIDTH_MED-2,0,SQUARE_SIZE_MED,SSD1306_LCDHEIGHT);

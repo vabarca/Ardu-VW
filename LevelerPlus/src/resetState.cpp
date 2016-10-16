@@ -19,7 +19,7 @@
 
 void CResetState::button0ShortPress()
 {
-  _pStateMachine->setState(_pStateMachine->getTempState());
+  _pStateMachine->setState(_pStateMachine->getAltitudeState());
 }
 
 //-----------------------------------------------------------------------------

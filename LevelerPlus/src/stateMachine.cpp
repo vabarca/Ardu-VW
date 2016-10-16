@@ -19,15 +19,20 @@
 
 CStateMachine::CStateMachine():
 	_pWelcomeState(new CWelcomeState(this))
-	,_pTempState (new CTempState{this})
-  ,_pTempStateCfg (new CTempStateCfg{this})
 	,_pAltitudeState (new CAltitudeState{this})
   ,_pAltitudeStateCfg (new CAltitudeStateCfg{this})
+  ,_pAltitudeRelState (new CAltitudeRelState{this})
 	,_pAttitudeState (new CAttitudeState{this})
   ,_pAttitudeStateCfg (new CAttitudeStateCfg{this})
-  ,_pHeadingState(new CHeadingState{this})
   ,_pResetState(new CResetState{this})
   ,_pPressureState(new CPressureState{this})
+#ifdef USE_TEMP_STATE
+	,_pTempState (new CTempState{this})
+  ,_pTempStateCfg (new CTempStateCfg{this})
+#endif
+#ifdef USE_MAG
+    ,_pHeadingState(new CHeadingState{this})
+#endif
 	,_ulTimeStamp(millis())
   ,_u8g(U8G_I2C_OPT_FAST)
   ,_fTemperature(0.0f)
@@ -54,27 +59,33 @@ CStateMachine::CStateMachine():
 CStateMachine::~CStateMachine()
 {
   delete _pWelcomeState;
-	delete _pTempState;
 	delete _pAltitudeState;
+  delete _pAltitudeStateCfg;
+  delete _pAltitudeRelState;
 	delete _pAttitudeState;
   delete _pAttitudeStateCfg;
-	delete _pTempStateCfg;
-  delete _pHeadingState;
   delete _pResetState;
-	delete _pAltitudeStateCfg;
   delete _pPressureState;
+  #ifdef USE_TEMP_STATE
+  	delete _pTempState;
+    delete _pTempStateCfg;
+  #endif
+  #ifdef USE_MAG
+    delete _pHeadingState;
+  #endif
 
-	_pState 			      = 0;
-	_pWelcomeState 		  = 0;
-	_pTempState 		    = 0;
-	_pAltitudeState 	  = 0;
-	_pAttitudeState 	  = 0;
+  _pState 			      = 0;
+  _pWelcomeState 		  = 0;
+  _pAltitudeState 	  = 0;
+  _pAltitudeStateCfg 	= 0;
+  _pAltitudeRelState  = 0;
+  _pAttitudeState 	  = 0;
   _pAttitudeStateCfg  = 0;
-	_pTempStateCfg 		  = 0;
-	_pAltitudeStateCfg 	= 0;
-  _pHeadingState      = 0;
   _pResetState        = 0;
   _pPressureState     = 0;
+  _pTempState 		    = 0;
+  _pTempStateCfg 		  = 0;
+  _pHeadingState      = 0;
 }
 
 //-----------------------------------------------------------------------------

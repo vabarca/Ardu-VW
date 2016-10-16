@@ -48,7 +48,7 @@ eEvent CButtonHandler::handle()
 {
   eEvent event (EV_NONE);
 
-  if(millis() - _lastLoopTime < 20)
+  if(millis() - _lastLoopTime < 30)
     return event;
 
   _lastLoopTime = millis();

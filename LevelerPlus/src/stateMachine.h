@@ -50,18 +50,18 @@ class CStateMachine{
   friend class CPressureState;
 private:
   //State machine
+  IState* _pState;
   IState* _pWelcomeState;
-  IState* _pTempState;
-  IState* _pTempStateCfg;
   IState* _pAltitudeState;
   IState* _pAltitudeStateCfg;
   IState* _pAltitudeRelState;
   IState* _pAttitudeState;
   IState* _pAttitudeStateCfg;
-  IState* _pHeadingState;
   IState* _pResetState;
   IState* _pPressureState;
-  IState* _pState;
+  IState* _pTempState;
+  IState* _pTempStateCfg;
+  IState* _pHeadingState;
 
   unsigned long         _ulTimeStamp;
 
@@ -126,16 +126,16 @@ public:
   void  button1LongPress();
   void  drawCurrentState();
 
-  inline IState* getTempState() const {return _pTempState;}
-  inline IState* getTempStateCfg()const {return _pTempStateCfg;}
   inline IState* getAltitudeState()const {return _pAltitudeState;}
   inline IState* getAltitudeStateCfg()const {return _pAltitudeStateCfg;}
   inline IState* getAltitudeRelState()const {return _pAltitudeRelState;}
   inline IState* getAttitudeState()const {return _pAttitudeState;}
   inline IState* getAttitudeStateCfg()const {return _pAttitudeStateCfg;}
-  inline IState* getHeadingState()const {return _pHeadingState;}
   inline IState* getResetState()const {return _pResetState;}
   inline IState* getPressureState()const {return _pPressureState;}
+  inline IState* getTempState() const {return _pTempState;}
+  inline IState* getTempStateCfg()const {return _pTempStateCfg;}
+  inline IState* getHeadingState()const {return _pHeadingState;}
 
   inline void setState(IState* pState){this->_pState = pState;}
 };
