@@ -62,7 +62,7 @@ void CAttitudeState::drawCurrentState()
   _pStateMachine->_u8g.drawBox(0,SSD1306_LCDHEIGHT_MED-2,SSD1306_LCDWIDTH,SQUARE_SIZE_MED);
   _pStateMachine->_u8g.drawBox(SSD1306_LCDWIDTH_MED-2,0,SQUARE_SIZE_MED,SSD1306_LCDHEIGHT);
 
-  y=(int)(_pStateMachine->_oGDif.roll * ZOOM_FACTOR) + (SSD1306_LCDHEIGHT_MED)-SQUARE_SIZE_MED;
+  y=-(int)(_pStateMachine->_oGDif.roll * ZOOM_FACTOR) + (SSD1306_LCDHEIGHT_MED)-SQUARE_SIZE_MED;
   x=-(int)(_pStateMachine->_oGDif.pitch * ZOOM_FACTOR) + (SSD1306_LCDWIDTH_MED)-SQUARE_SIZE_MED;
 
   _pStateMachine->_u8g.drawBox(x-SQUARE_SIZE,y-SQUARE_SIZE,SQUARE_SIZE,SQUARE_SIZE);

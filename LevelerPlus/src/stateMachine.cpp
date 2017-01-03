@@ -133,8 +133,15 @@ void  CStateMachine::setup()
   delay(100);
 
   // populate gfaMovavg_buff before starting loop
-  for(int i=0; i<MOVAVG_SIZE; i++)
-    _faMovavg_buff[i] = _oBaro.getPressure(MS561101BA_OSR_4096);
+	float fPress {0};
+  for(int i=0; i<MOVAVG_SIZE; ){
+		fPress = _oBaro.getPressure(MS561101BA_OSR_4096);
+		if(fPress){
+			_faMovavg_buff[i] = fPress;
+			i++;
+		}
+	}
+
 #endif
 
   //Load calibration
@@ -341,8 +348,8 @@ void  CStateMachine::_attitudeTask()
 void CStateMachine::_pressTask()
 {
   #ifdef USE_BARO
-    _pushAvg(_oBaro.getPressure(MS561101BA_OSR_4096));
-    _fPress = _getAvg(_faMovavg_buff, MOVAVG_SIZE);
+    	_pushAvg(_oBaro.getPressure(MS561101BA_OSR_4096));
+    	_fPress = _getAvg(_faMovavg_buff, MOVAVG_SIZE);
   #endif
 }
 
@@ -351,8 +358,8 @@ void CStateMachine::_pressTask()
 void CStateMachine::_tempTask()
 {
   #ifdef USE_BARO
-    _fTemperature = _oBaro.getTemperature(MS561101BA_OSR_4096) +
-      _fTemperatureCalib;
+    	_fTemperature =  _oBaro.getTemperature(MS561101BA_OSR_4096) +
+				_fTemperatureCalib;
   #else
     static float fM = 0.98;
     static float fTAdj = 36.53f;
