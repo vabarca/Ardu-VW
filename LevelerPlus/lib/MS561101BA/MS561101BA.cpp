@@ -40,13 +40,14 @@ void printLongLong(uint64_t n, uint8_t base) {
 */
 
 
-MS561101BA::MS561101BA() {
-  ;
+MS561101BA::MS561101BA()
+:pressCache(0)
+,tempCache(0){
 }
 
-void MS561101BA::init(uint8_t address) {  
+void MS561101BA::init(uint8_t address) {
   _addr =  address;
-  
+
   // disable internal pullups of the ATMEGA which Wire enable by default
   #if defined(__AVR_ATmega168__) || defined(__AVR_ATmega8__) || defined(__AVR_ATmega328P__)
     // deactivate internal pull-ups for twi
@@ -59,7 +60,7 @@ void MS561101BA::init(uint8_t address) {
     cbi(PORTD, 0);
     cbi(PORTD, 1);
   #endif
- 
+
   reset(); // reset the device to populate its internal PROM registers
   delay(1000); // some safety time
   readPROM(); // reads the PROM into object variables for later use
@@ -67,17 +68,17 @@ void MS561101BA::init(uint8_t address) {
 
 float MS561101BA::getPressure(uint8_t OSR) {
   // see datasheet page 7 for formulas
-  
+
   uint32_t rawPress = rawPressure(OSR);
-  if(rawPress == NULL) {
-    return NULL;
+  if(!rawPress) {
+    return 0;
   }
-  
+
   int32_t dT = getDeltaTemp(OSR);
-  if(dT == NULL) {
-    return NULL;
+  if(!dT) {
+    return 0;
   }
-  
+
   int64_t off  = ((uint32_t)_C[1] <<16) + (((int64_t)dT * _C[3]) >> 7);
   int64_t sens = ((uint32_t)_C[0] <<15) + (((int64_t)dT * _C[2]) >> 8);
   return ((( (rawPress * sens ) >> 21) - off) >> 15) / 100.0;
@@ -86,22 +87,22 @@ float MS561101BA::getPressure(uint8_t OSR) {
 float MS561101BA::getTemperature(uint8_t OSR) {
   // see datasheet page 7 for formulas
   int64_t dT = getDeltaTemp(OSR);
-  
-  if(dT != NULL) {
+
+  if(dT) {
     return (2000 + ((dT * _C[5]) >> 23)) / 100.0;
   }
   else {
-    return NULL;
+    return 0;
   }
 }
 
 int32_t MS561101BA::getDeltaTemp(uint8_t OSR) {
   uint32_t rawTemp = rawTemperature(OSR);
-  if(rawTemp != NULL) {
+  if(rawTemp) {
     return (int32_t)(rawTemp - ((uint32_t)_C[4] << 8));
   }
   else {
-    return NULL;
+    return 0;
   }
 }
 
@@ -119,8 +120,8 @@ uint32_t MS561101BA::rawPressure(uint8_t OSR) {
       startConversion(MS561101BA_D1 + OSR);
       lastPresConv = now;
     }
-    return pressCache;
   }
+  return pressCache;
 }
 
 uint32_t MS561101BA::rawTemperature(uint8_t OSR) {
@@ -149,12 +150,12 @@ void MS561101BA::startConversion(uint8_t command) {
 
 uint32_t MS561101BA::getConversion(uint8_t command) {
   union {uint32_t val; uint8_t raw[4]; } conversion = {0};
-  
+
   // start read sequence
   Wire.beginTransmission(_addr);
   Wire.write(0);
   Wire.endTransmission();
-  
+
   Wire.beginTransmission(_addr);
   Wire.requestFrom(_addr, (uint8_t) MS561101BA_D1D2_SIZE);
   if(Wire.available()) {
@@ -165,7 +166,7 @@ uint32_t MS561101BA::getConversion(uint8_t command) {
   else {
     conversion.val = -1;
   }
-  
+
   return conversion.val;
 }
 
@@ -178,12 +179,12 @@ int MS561101BA::readPROM() {
     Wire.beginTransmission(_addr);
     Wire.write(MS561101BA_PROM_BASE_ADDR + (i * MS561101BA_PROM_REG_SIZE));
     Wire.endTransmission();
-    
+
     Wire.beginTransmission(_addr);
     Wire.requestFrom(_addr, (uint8_t) MS561101BA_PROM_REG_SIZE);
     if(Wire.available()) {
       _C[i] = Wire.read() << 8 | Wire.read();
-      
+
       //DEBUG_PRINT(_C[i]);
     }
     else {
@@ -203,6 +204,3 @@ void MS561101BA::reset() {
   Wire.write(MS561101BA_RESET);
   Wire.endTransmission();
 }
-
-
-

@@ -48,9 +48,9 @@ void setup() {
 
   // Suppose that the CSB pin is connected to GND.
   // You'll have to check this on your breakout schematics
-  baro.init(MS561101BA_ADDR_CSB_LOW); 
+  baro.init(MS561101BA_ADDR_CSB_LOW);
   delay(100);
-  
+
   // populate movavg_buff before starting loop
   for(int i=0; i<MOVAVG_SIZE; i++) {
     movavg_buff[i] = baro.getPressure(MS561101BA_OSR_4096);
@@ -62,7 +62,7 @@ void loop() {
   temperature = baro.getTemperature(MS561101BA_OSR_4096);
   Serial.print(temperature);
   Serial.print(" degC pres: ");
-  
+
   press = baro.getPressure(MS561101BA_OSR_4096);
   pushAvg(press);
   press = getAvg(movavg_buff, MOVAVG_SIZE);
