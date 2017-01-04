@@ -69,9 +69,6 @@ private:
   CData                 _oGDif;
   CData                 _oGCal;
 
-  Kalman                _oPitch;
-  Kalman                _oRoll;
-
   U8GLIB_SSD1306_128X64 _u8g;
 
   float                 _fTemperature;
@@ -82,15 +79,14 @@ private:
   float                 _fPress;
   float                 _fHeading;
   float                 _faMovavg_buff[MOVAVG_SIZE];
-  int16_t               _i16ax, _i16ay, _i16az, _i16gx, _i16gy, _i16gz;
   uint8_t               _ui8DrawNumberLines;
 
-  MPU60X0               _oAccelgyro;
+  MPU6050               _oAccelgyro;
   #ifdef USE_BARO
     MS561101BA          _oBaro;
   #endif
   #ifdef USE_MAG
-    HMC58X3             _oCompass;
+    HMC5883L             _oCompass;
   #endif
 
 private:
@@ -102,8 +98,6 @@ private:
   void    _loadAltitudeRef(float& data);
   void    _saveCalib(const CData& data);
   void    _loadCalib(CData& data);
-  float   _getRoll();
-  float   _getPitch();
   void    _pushAvg(float val);
   float   _getAvg(float * buff, int size);
   void    _attitudeTask();
@@ -114,8 +108,8 @@ private:
   void    _restoreSettings();
   uint8_t _getFloatDrawColPos(const float& data);
   uint8_t _getDrawRowPos(const uint8_t line);
-  inline void    _setDrawNumberLines(uint8_t value)
-  {_ui8DrawNumberLines = value-1;}
+  inline void _setDrawNumberLines(uint8_t value)
+    {_ui8DrawNumberLines = value-1;}
 
 public:
   CStateMachine();

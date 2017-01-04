@@ -34,9 +34,10 @@ class CData
   public:
     double pitch;
     double roll;
+    double yaw;
 
   //--------
-    
+
   public:
     CData();
 

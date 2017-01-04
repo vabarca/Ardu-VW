@@ -51,8 +51,8 @@
 #include <I2Cdev.h>
 
 #include <U8glib.h>
-#include <HMC58X3.h>
-#include <MPU60X0.h>
+#include <HMC5883L.h>
+#include <MPU6050.h>
 #include <MS561101BA.h>
 
 //---[ Application-specific header files: ]------------------------------------

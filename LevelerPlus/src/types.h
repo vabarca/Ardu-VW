@@ -103,12 +103,17 @@ const uint8_t EEPROM_CAL_PITCH      (0);
 /**
  * EEPROM memory addresses for ROLL calibration data
  */
-const uint8_t EEPROM_CAL_ROLL       (EEPROM_CAL_PITCH + sizeof(float));
+const uint8_t EEPROM_CAL_ROLL       (EEPROM_CAL_PITCH + sizeof(double));
+
+/**
+ * EEPROM memory addresses for YAW calibration data
+ */
+const uint8_t EEPROM_CAL_YAW       (EEPROM_CAL_ROLL + sizeof(double));
 
 /**
  * EEPROM memory addresses for altitude calibration data
  */
-const uint8_t EEPROM_CAL_ALTITUDE   (EEPROM_CAL_ROLL + sizeof(float));
+const uint8_t EEPROM_CAL_ALTITUDE   (EEPROM_CAL_YAW + sizeof(float));
 
 /**
  * EEPROM memory addresses for altitude calibration data

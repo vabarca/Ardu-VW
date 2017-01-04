@@ -21,8 +21,9 @@
 //-----------------------------------------------------------------------------
 
 CData::CData()
-  :roll(0.0)
-  ,pitch(0.0)
+  :pitch(0.0)
+  ,roll(0.0)
+  ,yaw(0.0)
 {}
 
 //-----------------------------------------------------------------------------
@@ -32,6 +33,7 @@ CData& CData::operator=(const CData& other)
     if (this == &other) return *this;
     this->roll = other.roll;
     this->pitch = other.pitch;
+    this->yaw = other.yaw;
     return *this;
 }
 
