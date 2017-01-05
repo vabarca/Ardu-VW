@@ -42,6 +42,13 @@ CStateMachine::CStateMachine()
 
 {
   _pState = _pWelcomeState;
+
+  _i16Accel.XAxis = 0;
+  _i16Accel.YAxis = 0;
+  _i16Accel.ZAxis = 0;
+  _i16Gyro.XAxis = 0;
+  _i16Gyro.YAxis = 0;
+  _i16Gyro.ZAxis = 0;
 }
 
 //-----------------------------------------------------------------------------
@@ -113,7 +120,7 @@ void CStateMachine::setup() {
 
   // Set threshold sensivty. Default 3.
   // If you don't want use threshold, comment this line or set 0.
-  _oAccelgyro.setThreshold(3);
+  _oAccelgyro.setThreshold(0);
 
 #ifdef USE_MAG
   while (!_oCompass.begin())
@@ -160,6 +167,11 @@ void CStateMachine::setup() {
   _loadAltitudeCalib(_fAltitudeCalib);
   _loadAltitudeRef(_fAltitudeRef);
   _loadTempCalib(_fTemperatureCalib);
+
+  // Set kalman staring point
+  _getMotion6();
+  _oRoll.setAngle(_getRoll());
+  _oPitch.setAngle(_getPitch());
 }
 
 //-----------------------------------------------------------------------------
@@ -265,6 +277,37 @@ void CStateMachine::_loadCalib(CData &data) {
 
 //-----------------------------------------------------------------------------
 
+void CStateMachine::_getMotion6() {
+  _i16Accel = _oAccelgyro.readRawAccel();
+  _i16Gyro = _oAccelgyro.readRawGyro();
+}
+
+float CStateMachine::_getRoll() {
+#ifdef RESTRICT_PITCH
+  return atan2((float)_i16Accel.YAxis, (float)_i16Accel.ZAxis) * RAD_2_DEG;
+#else
+  return atan(_i16Accel.YAxis /
+              sqrt((float)_i16Accel.XAxis * (float)_i16Accel.XAxis +
+                   (float)_i16Accel.ZAxis * (float)_i16Accel.ZAxis)) *
+         RAD_2_DEG;
+#endif
+}
+
+//-----------------------------------------------------------------------------
+
+float CStateMachine::_getPitch() {
+#ifdef RESTRICT_PITCH
+  return atan(-(float)_i16Accel.XAxis /
+              sqrt((float)_i16Accel.YAxis * (float)_i16Accel.YAxis +
+                   (float)_i16Accel.ZAxis * (float)_i16Accel.ZAxis)) *
+         RAD_2_DEG;
+#else
+  return atan2(-(float)_i16Accel.XAxis, (float)_i16Accel.ZAxis) * RAD_2_DEG;
+#endif
+}
+
+//-----------------------------------------------------------------------------
+
 void CStateMachine::_pushAvg(float val) {
   static int movavg_i(0);
   _faMovavg_buff[movavg_i] = val;
@@ -284,33 +327,27 @@ float CStateMachine::_getAvg(float *buff, int size) {
 //-----------------------------------------------------------------------------
 
 void CStateMachine::_attitudeTask() {
-  static uint32_t timerCnt(0);
-  static float dt(0.0f);
-  static Vector norm;
 
-  // Read normalized values
-  norm = _oAccelgyro.readNormalizeGyro();
+  static uint32_t timerCnt(0);
+  static float dt(0.0f), gyroXrate(0.0f), gyroYrate(0.0f);
+
+  // Balance calculus
+  _getMotion6();
 
   dt = (float)(micros() - timerCnt) / 1000000; // Calculate delta time
   timerCnt = micros();
 
-  // Calculate Pitch, Roll and Yaw
-  _oG.pitch = _oG.pitch + norm.YAxis * dt;
-  _oG.roll = _oG.roll + norm.XAxis * dt;
-  _oG.yaw = _oG.yaw + norm.ZAxis * dt;
+  gyroXrate = _i16Gyro.XAxis / 131.0; // Convert to deg/s
+  gyroYrate = _i16Gyro.ZAxis / 131.0; // Convert to deg/s
+
+  // Calculate the angle using a Kalman filter
+  _oG.roll = _oRoll.getAngle(_getRoll(), gyroXrate, dt);
+  _oG.pitch = _oPitch.getAngle(_getPitch(), gyroYrate, dt);
 
   _oGDif.roll = _oG.roll - _oGCal.roll;
   _oGDif.pitch = _oG.pitch - _oGCal.pitch;
-  _oGDif.yaw = _oG.yaw - _oGCal.yaw;
 
-  SERIAL_PRINT("data:\t");
-  SERIAL_PRINT(gyroXrate);
-  SERIAL_PRINT("\t");
-  SERIAL_PRINT(gyroYrate);
-  SERIAL_PRINT("\t");
-  SERIAL_PRINT(_getRoll());
-  SERIAL_PRINT("\t");
-  SERIAL_PRINT(_getPitch());
+  SERIAL_PRINT("Atti:\t");
   SERIAL_PRINT("\t");
   SERIAL_PRINT(_oG.roll);
   SERIAL_PRINT("\t");
@@ -323,12 +360,6 @@ void CStateMachine::_attitudeTask() {
   SERIAL_PRINT(_oGCal.pitch);
   SERIAL_PRINT("\t");
   SERIAL_PRINT(_oGCal.yaw);
-  SERIAL_PRINT("\t");
-  SERIAL_PRINT(_oGDif.roll);
-  SERIAL_PRINT("\t");
-  SERIAL_PRINT(_oGDif.pitch);
-  SERIAL_PRINT("\t");
-  SERIAL_PRINT(_oGDif.yaw);
   SERIAL_PRINTLN("\t **");
 }
 
@@ -357,8 +388,7 @@ void CStateMachine::_tempTask() {
   SERIAL_PRINT("Temp:");
   SERIAL_PRINT("\t");
   SERIAL_PRINT(_fTemperature);
-  SERIAL_PRINT("\t");
-  SERIAL_PRINTLN("degC");
+  SERIAL_PRINTLN("\t **");
 }
 
 //-----------------------------------------------------------------------------
@@ -374,15 +404,14 @@ void CStateMachine::_altitudeTask() {
   SERIAL_PRINT("\t");
   SERIAL_PRINT(_fPress);
   SERIAL_PRINT("\t");
-  SERIAL_PRINT("mbar altitude:");
+  SERIAL_PRINT("altitude:");
   SERIAL_PRINT("\t");
   SERIAL_PRINT(_fAltitude);
   SERIAL_PRINT("\t");
-  SERIAL_PRINT("m altitude calib:");
+  SERIAL_PRINT("altitude calib:");
   SERIAL_PRINT("\t");
   SERIAL_PRINT(_fAltitudeCalib);
-  SERIAL_PRINT("\t");
-  SERIAL_PRINTLN("m");
+  SERIAL_PRINTLN("\t **");
 #endif
 }
 
@@ -390,17 +419,30 @@ void CStateMachine::_altitudeTask() {
 
 void CStateMachine::_headingTask() {
 #ifdef USE_MAG
-  static float fx, fy, fz;
-  _oCompass.getValues(&fx, &fy, &fz);
-  _fHeading = atan2(fy, fx);
+  static Vector norm;
+  norm = _oCompass.readNormalize();
+  // Calculate heading
+  _fHeading = atan2(norm.YAxis, norm.XAxis);
+
+  // Set declination angle on your location and fix heading
+  // You can find your declination on: http://magnetic-declination.com/
+  // (+) Positive or (-) for negative
+  // For Bytom / Poland declination angle is 4'26E (positive)
+  // Formula: (deg + (min / 60.0)) / (180 / M_PI);
+  float declinationAngle = (0.06667 + (26.0 / 60.0)) / (180 / M_PI);
+  _fHeading += declinationAngle;
+
+  // Correct for heading < 0deg and heading > 360deg
   if (_fHeading < 0)
     _fHeading += M_PI_D;
+
+  if (_fHeading > M_PI_D)
+    _fHeading -= M_PI_D;
 
   SERIAL_PRINT("Orientation:");
   SERIAL_PRINT("\t");
   SERIAL_PRINT(_fHeading * RAD_2_DEG);
-  SERIAL_PRINT("\t");
-  SERIAL_PRINTLN("deg");
+  SERIAL_PRINTLN("\t **");
 #endif
 }
 
