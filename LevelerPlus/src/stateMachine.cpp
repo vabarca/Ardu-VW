@@ -38,17 +38,11 @@ CStateMachine::CStateMachine()
       _ulTimeStamp(millis()), _u8g(U8G_I2C_OPT_FAST), _fTemperature(0.0f),
       _fTemperatureCalib(0.0f), _fAltitude(0.0f), _fAltitudeCalib(0.0f),
       _fAltitudeRef(0.0f), _fPress(0.0f), _fHeading(0.0f),
-      _ui8DrawNumberLines(1)
+      _ui8DrawNumberLines(1), _i16ax(0), _i16ay(0), _i16az(0), _i16gx(0),
+      _i16gy(0), _i16gz(0), _oAccelgyro(MPU60X0{false, 0x68})
 
 {
   _pState = _pWelcomeState;
-
-  _i16Accel.XAxis = 0;
-  _i16Accel.YAxis = 0;
-  _i16Accel.ZAxis = 0;
-  _i16Gyro.XAxis = 0;
-  _i16Gyro.YAxis = 0;
-  _i16Gyro.ZAxis = 0;
 }
 
 //-----------------------------------------------------------------------------
@@ -113,16 +107,14 @@ void CStateMachine::setup() {
   //_u8g.setRot180();
 
   // initialize accelgyro device
-  _oAccelgyro.begin(MPU6050_SCALE_2000DPS, MPU6050_RANGE_2G);
-  // Calibrate gyroscope. The calibration must be at rest.
-  // If you don't want calibrate, comment this line.
-  //_oAccelgyro.calibrateGyro();
-
-  // Set threshold sensivty. Default 3.
-  // If you don't want use threshold, comment this line or set 0.
-  _oAccelgyro.setThreshold(0);
+  _oAccelgyro.initialize();
+  _oAccelgyro.testConnection();
+  _oAccelgyro.setI2CMasterModeEnabled(false);
+  _oAccelgyro.setI2CBypassEnabled(true);
+  _oAccelgyro.setSleepEnabled(false);
 
 #ifdef USE_MAG
+
   while (!_oCompass.begin())
     delay(500);
 
@@ -169,7 +161,7 @@ void CStateMachine::setup() {
   _loadTempCalib(_fTemperatureCalib);
 
   // Set kalman staring point
-  _getMotion6();
+  _oAccelgyro.getMotion6(&_i16ax, &_i16ay, &_i16az, &_i16gx, &_i16gy, &_i16gz);
   _oRoll.setAngle(_getRoll());
   _oPitch.setAngle(_getPitch());
 }
@@ -277,18 +269,12 @@ void CStateMachine::_loadCalib(CData &data) {
 
 //-----------------------------------------------------------------------------
 
-void CStateMachine::_getMotion6() {
-  _i16Accel = _oAccelgyro.readRawAccel();
-  _i16Gyro = _oAccelgyro.readRawGyro();
-}
-
 float CStateMachine::_getRoll() {
 #ifdef RESTRICT_PITCH
-  return atan2((float)_i16Accel.YAxis, (float)_i16Accel.ZAxis) * RAD_2_DEG;
+  return atan2((float)_i16ay, (float)_i16az) * RAD_2_DEG;
 #else
-  return atan(_i16Accel.YAxis /
-              sqrt((float)_i16Accel.XAxis * (float)_i16Accel.XAxis +
-                   (float)_i16Accel.ZAxis * (float)_i16Accel.ZAxis)) *
+  return atan(_i16ay / sqrt((float)_i16ax * (float)_i16ax +
+                            (float)_i16az * (float)_i16az)) *
          RAD_2_DEG;
 #endif
 }
@@ -297,12 +283,11 @@ float CStateMachine::_getRoll() {
 
 float CStateMachine::_getPitch() {
 #ifdef RESTRICT_PITCH
-  return atan(-(float)_i16Accel.XAxis /
-              sqrt((float)_i16Accel.YAxis * (float)_i16Accel.YAxis +
-                   (float)_i16Accel.ZAxis * (float)_i16Accel.ZAxis)) *
+  return atan(-(float)_i16ax / sqrt((float)_i16ay * (float)_i16ay +
+                                    (float)_i16az * (float)_i16az)) *
          RAD_2_DEG;
 #else
-  return atan2(-(float)_i16Accel.XAxis, (float)_i16Accel.ZAxis) * RAD_2_DEG;
+  return atan2(-(float)_i16ax, (float)az) * RAD_2_DEG;
 #endif
 }
 
@@ -332,13 +317,13 @@ void CStateMachine::_attitudeTask() {
   static float dt(0.0f), gyroXrate(0.0f), gyroYrate(0.0f);
 
   // Balance calculus
-  _getMotion6();
+  _oAccelgyro.getMotion6(&_i16ax, &_i16ay, &_i16az, &_i16gx, &_i16gy, &_i16gz);
 
   dt = (float)(micros() - timerCnt) / 1000000; // Calculate delta time
   timerCnt = micros();
 
-  gyroXrate = _i16Gyro.XAxis / 131.0; // Convert to deg/s
-  gyroYrate = _i16Gyro.ZAxis / 131.0; // Convert to deg/s
+  gyroXrate = _i16gx / 131.0; // Convert to deg/s
+  gyroYrate = _i16gy / 131.0; // Convert to deg/s
 
   // Calculate the angle using a Kalman filter
   _oG.roll = _oRoll.getAngle(_getRoll(), gyroXrate, dt);

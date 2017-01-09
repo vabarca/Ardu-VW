@@ -21,7 +21,7 @@
 //---[ Macros: ]---------------------------------------------------------------
 
 //#define ULTIMATE_DEBOUNCER
-//#define USE_MAG
+#define USE_MAG
 //#define USE_TEMP_STATE
 //#define SERIAL_OUTPUT
 #define USE_BARO
@@ -51,7 +51,7 @@
 #include <I2Cdev.h>
 
 #include <HMC5883L.h>
-#include <MPU6050.h>
+#include <MPU60X0.h>
 #include <MS561101BA.h>
 #include <U8glib.h>
 

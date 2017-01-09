@@ -84,11 +84,10 @@ private:
   float _fPress;
   float _fHeading;
   float _faMovavg_buff[MOVAVG_SIZE];
-  Vector _i16Accel;
-  Vector _i16Gyro;
   uint8_t _ui8DrawNumberLines;
+  int16_t _i16ax, _i16ay, _i16az, _i16gx, _i16gy, _i16gz;
 
-  MPU6050 _oAccelgyro;
+  MPU60X0 _oAccelgyro;
 #ifdef USE_BARO
   MS561101BA _oBaro;
 #endif
@@ -105,7 +104,6 @@ private:
   void _loadAltitudeRef(float &data);
   void _saveCalib(const CData &data);
   void _loadCalib(CData &data);
-  void _getMotion6();
   float _getRoll();
   float _getPitch();
   void _pushAvg(float val);
