@@ -109,11 +109,14 @@ void CStateMachine::setup() {
   // initialize accelgyro device
   _oAccelgyro.initialize();
   _oAccelgyro.testConnection();
+
+#ifdef USE_MAG
+
+  // REQUIRED TO GET COMPASS WORKING
+  // DAISY CHAIN CONNECTION BETWEEN ACCEL AND COMPASS
   _oAccelgyro.setI2CMasterModeEnabled(false);
   _oAccelgyro.setI2CBypassEnabled(true);
   _oAccelgyro.setSleepEnabled(false);
-
-#ifdef USE_MAG
 
   while (!_oCompass.begin())
     delay(500);
