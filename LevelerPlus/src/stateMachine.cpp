@@ -421,7 +421,7 @@ void CStateMachine::_headingTask() {
   _fHeading += declinationAngle;
 
   // Fix -pi/2 because mag mounting
-  _fHeading += M_PI / 2;
+  _fHeading += M_PI_MED;
 
   // Correct for heading < 0deg and heading > 360deg
   if (_fHeading < 0)

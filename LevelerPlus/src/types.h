@@ -15,135 +15,135 @@
 //-----------------------------------------------------------------------------
 
 #ifndef _TYPES_H_
- #define _TYPES_H_
+#define _TYPES_H_
 
- //-----------------------------------------------------------------------------
- //---[ Standard header files: ]------------------------------------------------
+//-----------------------------------------------------------------------------
+//---[ Standard header files: ]------------------------------------------------
 
- #if defined(ARDUINO) && ARDUINO >= 100
-   #include "Arduino.h"
- #else
-   #include "WProgram.h"
- #endif
+#if defined(ARDUINO) && ARDUINO >= 100
+#include "Arduino.h"
+#else
+#include "WProgram.h"
+#endif
 
- //---[ Version defines: ]-------------------------------------------------------
+//---[ Version defines: ]-------------------------------------------------------
 
- /**
-  * Program Major version
-  */
- const uint8_t  MAJOR     (1);
- /**
-  * Program Minor version
-  */
- const uint8_t  MINOR     (0);
- /**
-  * Program bugs fixes
-  */
- const uint8_t  PATCH     (0);
+/**
+ * Program Major version
+ */
+const uint8_t MAJOR(2);
+/**
+ * Program Minor version
+ */
+const uint8_t MINOR(1);
+/**
+ * Program bugs fixes
+ */
+const uint8_t PATCH(0);
 
 //-----------------------------------------------------------------------------
 //---[ Macros: ]---------------------------------------------------------------
 
 #ifdef SERIAL_OUTPUT
-  #define  SERIAL_BEGIN         Serial.begin(115200)
-  #define  SERIAL_PRINTLN(a)    Serial.println(a)
-  #define  SERIAL_PRINT(a)      Serial.print(a)
+#define SERIAL_BEGIN Serial.begin(115200)
+#define SERIAL_PRINTLN(a) Serial.println(a)
+#define SERIAL_PRINT(a) Serial.print(a)
 #else
-  #define  SERIAL_BEGIN
-  #define  SERIAL_PRINTLN(a)
-  #define  SERIAL_PRINT(a)
+#define SERIAL_BEGIN
+#define SERIAL_PRINTLN(a)
+#define SERIAL_PRINT(a)
 #endif
 
 //---[ Generic data Types: ]---------------------------------------------------
 
 //---[ Application enumerated parameters: ]------------------------------------
 
-enum eStateMachine
-{
-  ESM_WELCOME = 0
-  ,ESM_TEMP
-  ,ESM_ATTITUDE
-  ,ESM_CALIB_ATTITUDE
-  ,ESM_ALTITUDE
-  ,ESM_HEADING
-  ,ESM_CALIB_ALTITUDE
-  ,ESM_RESET
+enum eStateMachine {
+  ESM_WELCOME = 0,
+  ESM_TEMP,
+  ESM_ATTITUDE,
+  ESM_CALIB_ATTITUDE,
+  ESM_ALTITUDE,
+  ESM_HEADING,
+  ESM_CALIB_ALTITUDE,
+  ESM_RESET
 };
 
 //---[ Application-specific data Types: ]-------------------------------------
 
 //---[ Global defines: ]-------------------------------------------------------
 
+/**
+ */
+const float M_PI_MED(M_PI / 2);
+
+/**
+ */
+const float M_PI_D(2 * M_PI);
+
+/**
+ */
+const float RAD_2_DEG(180.0f / M_PI);
 
 /**
  * Altitude Filter Size
  */
-const float M_PI_D               (2 * M_PI);
-
-/**
- * Altitude Filter Size
- */
-const float RAD_2_DEG               (180.0f/M_PI);
-
-/**
- * Altitude Filter Size
- */
-const uint8_t MOVAVG_SIZE           (32);
+const uint8_t MOVAVG_SIZE(32);
 
 /**
  * Sea level average pressure
  */
-const float SEA_LEVEL_PRESSURE      (1013.25);
+const float SEA_LEVEL_PRESSURE(1013.25);
 
 /**
  * EEPROM memory addresses for PITCH calibration data
  */
-const uint8_t EEPROM_CAL_PITCH      (0);
+const uint8_t EEPROM_CAL_PITCH(0);
 
 /**
  * EEPROM memory addresses for ROLL calibration data
  */
-const uint8_t EEPROM_CAL_ROLL       (EEPROM_CAL_PITCH + sizeof(double));
+const uint8_t EEPROM_CAL_ROLL(EEPROM_CAL_PITCH + sizeof(double));
 
 /**
  * EEPROM memory addresses for YAW calibration data
  */
-const uint8_t EEPROM_CAL_YAW       (EEPROM_CAL_ROLL + sizeof(double));
+const uint8_t EEPROM_CAL_YAW(EEPROM_CAL_ROLL + sizeof(double));
 
 /**
  * EEPROM memory addresses for altitude calibration data
  */
-const uint8_t EEPROM_CAL_ALTITUDE   (EEPROM_CAL_YAW + sizeof(float));
+const uint8_t EEPROM_CAL_ALTITUDE(EEPROM_CAL_YAW + sizeof(float));
 
 /**
  * EEPROM memory addresses for altitude calibration data
  */
-const uint8_t EEPROM_REF_ALTITUDE   (EEPROM_CAL_ALTITUDE + sizeof(float));
+const uint8_t EEPROM_REF_ALTITUDE(EEPROM_CAL_ALTITUDE + sizeof(float));
 
 /**
  * EEPROM memory addresses for temp calibration data
  */
-const uint8_t EEPROM_CAL_TEMP       (EEPROM_REF_ALTITUDE + sizeof(float));
+const uint8_t EEPROM_CAL_TEMP(EEPROM_REF_ALTITUDE + sizeof(float));
 
 /**
  * Display width
  */
-const uint8_t SSD1306_LCDWIDTH      (128);
+const uint8_t SSD1306_LCDWIDTH(128);
 
 /**
  * Display height
  */
-const uint8_t SSD1306_LCDHEIGHT     (64);
+const uint8_t SSD1306_LCDHEIGHT(64);
 
 /**
  * Display width/2
  */
-const uint8_t SSD1306_LCDWIDTH_MED  (SSD1306_LCDWIDTH/2);
+const uint8_t SSD1306_LCDWIDTH_MED(SSD1306_LCDWIDTH / 2);
 
 /**
  * Display height/2
  */
-const uint8_t SSD1306_LCDHEIGHT_MED (SSD1306_LCDHEIGHT/2);
+const uint8_t SSD1306_LCDHEIGHT_MED(SSD1306_LCDHEIGHT / 2);
 
 /**
  * Comment out to restrict roll to �90deg instead - please
@@ -157,27 +157,32 @@ const uint8_t SSD1306_LCDHEIGHT_MED (SSD1306_LCDHEIGHT/2);
  * Macro to clear a shared variable in an atomic operation (critical area)
  */
 #ifndef CLEAR
-  #define CLEAR(x) { cli(); x = 0; sei(); }
+#define CLEAR(x)                                                               \
+  {                                                                            \
+    cli();                                                                     \
+    x = 0;                                                                     \
+    sei();                                                                     \
+  }
 #endif
 
 /**
  * Macro to clear individual bits in a SFR register
  */
 #ifndef cbi
-  #define cbi(sfr, bit) (_SFR_BYTE(sfr) &= ~_BV(bit))
+#define cbi(sfr, bit) (_SFR_BYTE(sfr) &= ~_BV(bit))
 #endif
 
 /**
  * Macro to set individual bits in a SFR register
  */
 #ifndef sbi
-  #define sbi(sfr, bit) (_SFR_BYTE(sfr) |= _BV(bit))
+#define sbi(sfr, bit) (_SFR_BYTE(sfr) |= _BV(bit))
 #endif
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
 
-#endif  // _TYPES_H_
+#endif // _TYPES_H_
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
