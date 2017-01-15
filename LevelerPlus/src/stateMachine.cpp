@@ -417,8 +417,11 @@ void CStateMachine::_headingTask() {
   // (+) Positive or (-) for negative
   // For Bytom / Poland declination angle is 4'26E (positive)
   // Formula: (deg + (min / 60.0)) / (180 / M_PI);
-  float declinationAngle = (0.06667 + (26.0 / 60.0)) / (180 / M_PI);
+  float declinationAngle = (0.0 + (2.0 / 60.0)) / (180 / M_PI);
   _fHeading += declinationAngle;
+
+  // Fix -pi/2 because mag mounting
+  _fHeading += M_PI / 2;
 
   // Correct for heading < 0deg and heading > 360deg
   if (_fHeading < 0)

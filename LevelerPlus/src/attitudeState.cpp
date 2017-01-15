@@ -18,14 +18,13 @@
 //-----------------------------------------------------------------------------
 
 void CAttitudeState::button0ShortPress() {
-  //_pStateMachine->setState(_pStateMachine->getResetState());
-  _pStateMachine->setState(_pStateMachine->getHeadingState());
+  _pStateMachine->setState(_pStateMachine->getPressureState());
 }
 
 //-----------------------------------------------------------------------------
 
 void CAttitudeState::button1ShortPress() {
-  _pStateMachine->setState(_pStateMachine->getPressureState());
+  _pStateMachine->setState(_pStateMachine->getHeadingState());
 }
 
 //-----------------------------------------------------------------------------
