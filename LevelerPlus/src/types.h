@@ -35,7 +35,7 @@ const uint8_t MAJOR(2);
 /**
  * Program Minor version
  */
-const uint8_t MINOR(1);
+const uint8_t MINOR(2);
 /**
  * Program bugs fixes
  */
