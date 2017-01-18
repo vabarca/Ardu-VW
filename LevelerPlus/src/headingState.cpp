@@ -40,9 +40,6 @@ void CHeadingState::button1LongPress() {}
 void CHeadingState::drawCurrentState() {
   // THIS LINE MUST BE UNCOMMENTED IF THIS IS THE DEFAULT STATE
   //_pStateMachine->_ulTimeStamp = millis();
-  PROGMEM const char *windrose[] = {"N",  "N-NE", "NE", "NE-E", "E",  "E-SE",
-                                    "SE", "S-SE", "S",  "S-SO", "SO", "SO-O",
-                                    "O",  "NO-O", "NO", "N-NO"};
 
   const uint8_t ui8CircleCentre(95);
 
@@ -59,8 +56,17 @@ void CHeadingState::drawCurrentState() {
   _pStateMachine->_setDrawNumberLines(1);
   _pStateMachine->_u8g.setPrintPos(
       0, (u8g_int_t)_pStateMachine->_getDrawRowPos(0));
-  _pStateMachine->_u8g.print(
-      windrose[(int)(_pStateMachine->_fHeading * RAD_2_DEG / 22.5)]);
+
+  float iData = (_pStateMachine->_fHeading * RAD_2_DEG);
+  String sWindRose = (iData >= 337.5 && iData < 22.5)?"N":
+  (iData >=22.5  && iData < 67.5)?"NE":
+  (iData >=67.5  && iData < 112.5)?"E":
+  (iData >=112.5  && iData < 157.5)?"SE":
+  (iData >=157.5  && iData < 202.5)?"S":
+  (iData >=202.5  && iData < 247.5)?"SO":
+  (iData >=247.5  && iData < 292.5)?"O":"NO";
+
+  _pStateMachine->_u8g.print(sWindRose.c_str());
 }
 
 //-----------------------------------------------------------------------------
