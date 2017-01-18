@@ -75,6 +75,10 @@ enum eStateMachine {
 
 /**
  */
+const float M_PI_QUAD(M_PI / 4);
+
+/**
+ */
 const float M_PI_MED(M_PI / 2);
 
 /**
