@@ -23,6 +23,8 @@
 //-----------------------------------------------------------------------------
 
 class CAltitudeStateCfg : public CAltitudeState{
+private:
+	void getAndSaveCurrentSeaLevelPressure();
 public:
   CAltitudeStateCfg(CStateMachine* pStateMachine):CAltitudeState{pStateMachine}{}
 	~CAltitudeStateCfg(){}

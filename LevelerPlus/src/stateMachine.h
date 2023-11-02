@@ -80,6 +80,7 @@ private:
   float _fTemperatureCalib;
   float _fAltitude;
   float _fAltitudeCalib;
+  float _fSeaLevelPressureCalib;
   float _fAltitudeRef;
   float _fPress;
   float _fHeading;
@@ -98,8 +99,8 @@ private:
 private:
   void _saveTempCalib(const float &data);
   void _loadTempCalib(float &data);
-  void _saveAltitudeCalib(const float &data);
-  void _loadAltitudeCalib(float &data);
+  void _saveSeaLevelPressureCalib(const float &data);
+  void _loadSeaLevelPressureCalib(float &data);
   void _saveAltitudeRef(const float &data);
   void _loadAltitudeRef(float &data);
   void _saveCalib(const CData &data);
