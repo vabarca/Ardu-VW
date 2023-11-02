@@ -37,6 +37,7 @@ CStateMachine::CStateMachine()
       ,
       _ulTimeStamp(millis()), _u8g(U8G_I2C_OPT_FAST), _fTemperature(0.0f),
       _fTemperatureCalib(0.0f), _fAltitude(0.0f), _fAltitudeCalib(0.0f),
+      _fSeaLevelPressureCalib(SEA_LEVEL_PRESSURE),
       _fAltitudeRef(0.0f), _fPress(0.0f), _fHeading(0.0f),
       _ui8DrawNumberLines(1), _i16ax(0), _i16ay(0), _i16az(0), _i16gx(0),
       _i16gy(0), _i16gz(0), _oAccelgyro(MPU60X0{false, 0x68})
@@ -159,7 +160,7 @@ void CStateMachine::setup() {
 
   // Load calibration
   _loadCalib(_oGCal);
-  _loadAltitudeCalib(_fAltitudeCalib);
+  _loadSeaLevelPressureCalib(_fSeaLevelPressureCalib);
   _loadAltitudeRef(_fAltitudeRef);
   _loadTempCalib(_fTemperatureCalib);
 
@@ -219,14 +220,14 @@ void CStateMachine::_restoreSettings() {
 //-----------------------------------------------------------------------------
 
 // Globals
-void CStateMachine::_saveAltitudeCalib(const float &data) {
-  EEPROM_writeAnything(EEPROM_CAL_ALTITUDE, data);
+void CStateMachine::_saveSeaLevelPressureCalib(const float &data) {
+  EEPROM_writeAnything(EEPROM_SEA_LEVEL_PRESSURE, data);
 }
 
 //-----------------------------------------------------------------------------
 
-void CStateMachine::_loadAltitudeCalib(float &data) {
-  EEPROM_readAnything(EEPROM_CAL_ALTITUDE, data);
+void CStateMachine::_loadSeaLevelPressureCalib(float &data) {
+  EEPROM_readAnything(EEPROM_SEA_LEVEL_PRESSURE, data);
 }
 
 //-----------------------------------------------------------------------------
@@ -383,10 +384,9 @@ void CStateMachine::_tempTask() {
 
 void CStateMachine::_altitudeTask() {
 #ifdef USE_BARO
-  _fAltitude = (((pow((SEA_LEVEL_PRESSURE / _fPress), 1.0f / 5.257f) - 1.0f) *
+  _fAltitude = (((pow((_fSeaLevelPressureCalib / _fPress), 1.0f / 5.257f) - 1.0f) *
                  (_fTemperature + 273.15f)) /
-                0.0065f) +
-               _fAltitudeCalib;
+                0.0065f) + _fAltitudeCalib;
 
   SERIAL_PRINT("Pres:");
   SERIAL_PRINT("\t");
@@ -396,9 +396,9 @@ void CStateMachine::_altitudeTask() {
   SERIAL_PRINT("\t");
   SERIAL_PRINT(_fAltitude);
   SERIAL_PRINT("\t");
-  SERIAL_PRINT("altitude calib:");
+  SERIAL_PRINT("Sea Level pressure calib:");
   SERIAL_PRINT("\t");
-  SERIAL_PRINT(_fAltitudeCalib);
+  SERIAL_PRINT(_fSeaLevelPressureCalib);
   SERIAL_PRINTLN("\t **");
 #endif
 }

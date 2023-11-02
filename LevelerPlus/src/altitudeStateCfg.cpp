@@ -31,9 +31,21 @@ void CAltitudeStateCfg::button1ShortPress()
 
 //-----------------------------------------------------------------------------
 
+void CAltitudeStateCfg::getAndSaveCurrentSeaLevelPressure()
+{
+  _pStateMachine->_saveSeaLevelPressureCalib(_pStateMachine->_fSeaLevelPressureCalib);
+  _fAltitude + _fAltitudeCalib= (((pow((_fSeaLevelPressureCalib / _fPress), 1.0f / 5.257f) - 1.0f) *
+                 (_fTemperature + 273.15f)) /
+                0.0065f);
+
+  _pStateMachine->_fAltitudeCalib = 0.0f;
+}
+
+//-----------------------------------------------------------------------------
+
 void CAltitudeStateCfg::button0LongPress()
 {
-  _pStateMachine->_saveAltitudeCalib(_pStateMachine->_fAltitudeCalib);
+  getAndSaveCurrentSeaLevelPressure();
   _pStateMachine->setState(_pStateMachine->getAltitudeState());
 }
 
@@ -41,7 +53,8 @@ void CAltitudeStateCfg::button0LongPress()
 
 void CAltitudeStateCfg::button1LongPress()
 {
-  this->button0LongPress();
+  getAndSaveCurrentSeaLevelPressure();
+  _pStateMachine->setState(_pStateMachine->getAltitudeState());
 }
 
 //-----------------------------------------------------------------------------

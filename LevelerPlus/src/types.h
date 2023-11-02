@@ -115,14 +115,14 @@ const uint8_t EEPROM_CAL_ROLL(EEPROM_CAL_PITCH + sizeof(double));
 const uint8_t EEPROM_CAL_YAW(EEPROM_CAL_ROLL + sizeof(double));
 
 /**
- * EEPROM memory addresses for altitude calibration data
+ * EEPROM memory addresses for sea level pressure calibration data
  */
-const uint8_t EEPROM_CAL_ALTITUDE(EEPROM_CAL_YAW + sizeof(float));
+const uint8_t EEPROM_SEA_LEVEL_PRESSURE(EEPROM_CAL_YAW + sizeof(float));
 
 /**
  * EEPROM memory addresses for altitude calibration data
  */
-const uint8_t EEPROM_REF_ALTITUDE(EEPROM_CAL_ALTITUDE + sizeof(float));
+const uint8_t EEPROM_REF_ALTITUDE(EEPROM_SEA_LEVEL_PRESSURE + sizeof(float));
 
 /**
  * EEPROM memory addresses for temp calibration data
