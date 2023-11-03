@@ -33,10 +33,13 @@ void CAltitudeStateCfg::button1ShortPress()
 
 void CAltitudeStateCfg::getAndSaveCurrentSeaLevelPressure()
 {
+  const float press = _pStateMachine->_fPress;
+  const float altitude = _pStateMachine->_fAltitude;
+  const float altitudeCalib = _pStateMachine->_fAltitudeCalib;
+  const float temp = _pStateMachine->_fTemperature;
+
+  _pStateMachine->_fSeaLevelPressureCalib =  press * (pow((TERM_B * (altitude - altitudeCalib)/(temp + ABSOLUTE_ZERO)) + 1.0f,TERM_C));
   _pStateMachine->_saveSeaLevelPressureCalib(_pStateMachine->_fSeaLevelPressureCalib);
-  _fAltitude + _fAltitudeCalib= (((pow((_fSeaLevelPressureCalib / _fPress), 1.0f / 5.257f) - 1.0f) *
-                 (_fTemperature + 273.15f)) /
-                0.0065f);
 
   _pStateMachine->_fAltitudeCalib = 0.0f;
 }
@@ -61,10 +64,9 @@ void CAltitudeStateCfg::button1LongPress()
 
 void CAltitudeStateCfg::drawCurrentState()
 {
-  _pStateMachine->_setDrawNumberLines(2);
-  _pStateMachine->_u8g.drawStr(110,
-    (u8g_int_t)_pStateMachine->_getDrawRowPos(1),
-    "*");
+  _pStateMachine->_setDrawNumberLines(2);  
+  u8g_uint_t y = (u8g_int_t)_pStateMachine->_getDrawRowPos(1);
+  _pStateMachine->_u8g.drawStr(110, y,"*");  
   CAltitudeState::drawCurrentState();
 }
 
