@@ -213,6 +213,9 @@ void CStateMachine::_restoreSettings() {
   for (unsigned int i = 0; i < EEPROM.length(); i++)
     EEPROM.write(i, 0);
 
+  //Reset Sea level pressure to default value
+  _saveSeaLevelPressureCalib(SEA_LEVEL_PRESSURE);
+
   // Reset System
   asm volatile("jmp 0");
 }
@@ -384,9 +387,8 @@ void CStateMachine::_tempTask() {
 
 void CStateMachine::_altitudeTask() {
 #ifdef USE_BARO
-  _fAltitude = (((pow((_fSeaLevelPressureCalib / _fPress), 1.0f / 5.257f) - 1.0f) *
-                 (_fTemperature + 273.15f)) /
-                0.0065f) + _fAltitudeCalib;
+  _fAltitude = (((pow((_fSeaLevelPressureCalib / _fPress), TERM_A) - 1.0f) * 
+                (_fTemperature + ABSOLUTE_ZERO)) / TERM_B) + _fAltitudeCalib;
 
   SERIAL_PRINT("Pres:");
   SERIAL_PRINT("\t");
