@@ -35,10 +35,9 @@ void CAltitudeStateCfg::getAndSaveCurrentSeaLevelPressure()
 {
   const float press = _pStateMachine->_fPress;
   const float altitude = _pStateMachine->_fAltitude;
-  const float altitudeCalib = _pStateMachine->_fAltitudeCalib;
   const float temp = _pStateMachine->_fTemperature;
 
-  _pStateMachine->_fSeaLevelPressureCalib =  press * (pow((TERM_B * (altitude - altitudeCalib)/(temp + ABSOLUTE_ZERO)) + 1.0f,TERM_C));
+  _pStateMachine->_fSeaLevelPressureCalib =  press * (pow((TERM_B * altitude/(temp + ABSOLUTE_ZERO)) + 1.0f,TERM_C));
   _pStateMachine->_saveSeaLevelPressureCalib(_pStateMachine->_fSeaLevelPressureCalib);
 
   _pStateMachine->_fAltitudeCalib = 0.0f;
