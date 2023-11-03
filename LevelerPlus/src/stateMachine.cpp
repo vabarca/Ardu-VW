@@ -37,7 +37,7 @@ CStateMachine::CStateMachine()
       ,
       _ulTimeStamp(millis()), _u8g(U8G_I2C_OPT_FAST), _fTemperature(0.0f),
       _fTemperatureCalib(0.0f), _fAltitude(0.0f), _fAltitudeCalib(0.0f),
-      _fSeaLevelPressureCalib(SEA_LEVEL_PRESSURE),
+      _fSeaLevelPressureCalib(DEFAULT_SEA_LEVEL_PRESSURE),
       _fAltitudeRef(0.0f), _fPress(0.0f), _fHeading(0.0f),
       _ui8DrawNumberLines(1), _i16ax(0), _i16ay(0), _i16az(0), _i16gx(0),
       _i16gy(0), _i16gz(0), _oAccelgyro(MPU60X0{false, 0x68})
@@ -214,7 +214,7 @@ void CStateMachine::_restoreSettings() {
     EEPROM.write(i, 0);
 
   //Reset Sea level pressure to default value
-  _saveSeaLevelPressureCalib(SEA_LEVEL_PRESSURE);
+  _saveSeaLevelPressureCalib(DEFAULT_SEA_LEVEL_PRESSURE);
 
   // Reset System
   asm volatile("jmp 0");

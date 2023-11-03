@@ -97,7 +97,7 @@ const uint8_t MOVAVG_SIZE{32};
 /**
  * Sea level average pressure
  */
-const float SEA_LEVEL_PRESSURE{1013.25};
+const float DEFAULT_SEA_LEVEL_PRESSURE{1013.25};
 
 /**
  * Sea level average pressure
