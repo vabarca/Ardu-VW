@@ -42,7 +42,7 @@ void CPressureState::drawCurrentState() {
   //_pStateMachine->_ulTimeStamp = millis();
 
   _pStateMachine->_setDrawNumberLines(2);
-  u8g_int_t x = (u8g_int_t)_pStateMachine->_getFloatDrawColPos(_pStateMachine->_fSeaLevelPressure);
+  u8g_int_t x = (u8g_int_t)_pStateMachine->_getFloatDrawColPos(_pStateMachine->_fPress);
   u8g_int_t y = (u8g_int_t)_pStateMachine->_getDrawRowPos(0);
   _pStateMachine->_u8g.setPrintPos(x, y);
   _pStateMachine->_u8g.print(_pStateMachine->_fPress, 1);

@@ -42,13 +42,13 @@ void CSeaLevelPressureState::drawCurrentState() {
   _pStateMachine->_ulTimeStamp = millis();
 
   _pStateMachine->_setDrawNumberLines(2);
-  _pStateMachine->_u8g.setPrintPos(
-      (u8g_int_t)_pStateMachine->_getFloatDrawColPos(_pStateMachine->_fPress),
-      (u8g_int_t)_pStateMachine->_getDrawRowPos(0));
-  _pStateMachine->_u8g.print(_pStateMachine->_fPress, 1);
-
-  _pStateMachine->_u8g.drawStr(5, (u8g_int_t)_pStateMachine->_getDrawRowPos(1),
-                               "Pres(mb)");
+  u8g_int_t x = (u8g_int_t)_pStateMachine->_getFloatDrawColPos(_pStateMachine->_fSeaLevelPressure);
+  u8g_int_t y = (u8g_int_t)_pStateMachine->_getDrawRowPos(0);
+  _pStateMachine->_u8g.setPrintPos(x, y);
+  _pStateMachine->_u8g.print(_pStateMachine->_fSeaLevelPressure, 1);
+  x = 0;
+  y = (u8g_int_t)_pStateMachine->_getDrawRowPos(1);
+  _pStateMachine->_u8g.drawStr(x, y, "SPres(mb)");
 }
 
 //-----------------------------------------------------------------------------
