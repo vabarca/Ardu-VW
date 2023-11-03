@@ -35,7 +35,7 @@ const uint8_t MAJOR(2);
 /**
  * Program Minor version
  */
-const uint8_t MINOR(2);
+const uint8_t MINOR(3);
 /**
  * Program bugs fixes
  */
@@ -75,79 +75,91 @@ enum eStateMachine {
 
 /**
  */
-const float M_PI_QUAD(M_PI / 4);
+const float M_PI_QUAD{M_PI / 4};
 
 /**
  */
-const float M_PI_MED(M_PI / 2);
+const float M_PI_MED{M_PI / 2};
 
 /**
  */
-const float M_PI_D(2 * M_PI);
+const float M_PI_D{2 * M_PI};
 
 /**
  */
-const float RAD_2_DEG(180.0f / M_PI);
+const float RAD_2_DEG{180.0f / M_PI};
 
 /**
  * Altitude Filter Size
  */
-const uint8_t MOVAVG_SIZE(32);
+const uint8_t MOVAVG_SIZE{32};
 
 /**
  * Sea level average pressure
  */
-const float SEA_LEVEL_PRESSURE(1013.25);
+const float DEFAULT_SEA_LEVEL_PRESSURE{1013.25};
+
+/**
+ * Sea level average pressure
+ */
+const float ABSOLUTE_ZERO{273.15f};
+
+/**
+ * For calculating altitude
+ */
+const float TERM_A{1.0f / 5.257f};
+const float TERM_B{0.0065f};
+const float TERM_C{5.257f};
 
 /**
  * EEPROM memory addresses for PITCH calibration data
  */
-const uint8_t EEPROM_CAL_PITCH(0);
+const uint8_t EEPROM_CAL_PITCH{0};
 
 /**
  * EEPROM memory addresses for ROLL calibration data
  */
-const uint8_t EEPROM_CAL_ROLL(EEPROM_CAL_PITCH + sizeof(double));
+const uint8_t EEPROM_CAL_ROLL{EEPROM_CAL_PITCH + sizeof(double)};
 
 /**
  * EEPROM memory addresses for YAW calibration data
  */
-const uint8_t EEPROM_CAL_YAW(EEPROM_CAL_ROLL + sizeof(double));
+const uint8_t EEPROM_CAL_YAW{EEPROM_CAL_ROLL + sizeof(double)};
+
+/**
+ * EEPROM memory addresses for sea level pressure calibration data
+ */
+const uint8_t EEPROM_SEA_LEVEL_PRESSURE{EEPROM_CAL_YAW + sizeof(float)};
 
 /**
  * EEPROM memory addresses for altitude calibration data
  */
-const uint8_t EEPROM_CAL_ALTITUDE(EEPROM_CAL_YAW + sizeof(float));
-
-/**
- * EEPROM memory addresses for altitude calibration data
- */
-const uint8_t EEPROM_REF_ALTITUDE(EEPROM_CAL_ALTITUDE + sizeof(float));
+const uint8_t EEPROM_REF_ALTITUDE{EEPROM_SEA_LEVEL_PRESSURE + sizeof(float)};
 
 /**
  * EEPROM memory addresses for temp calibration data
  */
-const uint8_t EEPROM_CAL_TEMP(EEPROM_REF_ALTITUDE + sizeof(float));
+const uint8_t EEPROM_CAL_TEMP{EEPROM_REF_ALTITUDE + sizeof(float)};
 
 /**
  * Display width
  */
-const uint8_t SSD1306_LCDWIDTH(128);
+const uint8_t SSD1306_LCDWIDTH{128};
 
 /**
  * Display height
  */
-const uint8_t SSD1306_LCDHEIGHT(64);
+const uint8_t SSD1306_LCDHEIGHT{64};
 
 /**
  * Display width/2
  */
-const uint8_t SSD1306_LCDWIDTH_MED(SSD1306_LCDWIDTH / 2);
+const uint8_t SSD1306_LCDWIDTH_MED{SSD1306_LCDWIDTH / 2};
 
 /**
  * Display height/2
  */
-const uint8_t SSD1306_LCDHEIGHT_MED(SSD1306_LCDHEIGHT / 2);
+const uint8_t SSD1306_LCDHEIGHT_MED{SSD1306_LCDHEIGHT / 2};
 
 /**
  * Comment out to restrict roll to �90deg instead - please

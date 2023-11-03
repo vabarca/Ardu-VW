@@ -1,9 +1,9 @@
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
 
-/** @file  altitudeStateCfg.h
- *  @date  July, 2016
- *  @brief Altitude State configuration class
+/** @file  pressureState.h
+ *  @date  Octubre, 2023
+ *  @brief Pressure State class
  *
  *
  *  @author Cooked by Vicente A. (TT)
@@ -12,33 +12,33 @@
  //-----------------------------------------------------------------------------
  //-----------------------------------------------------------------------------
 
-#ifndef __ALTITUDE_STATE_CFG_H__
- #define __ALTITUDE_STATE_CFG_H__
+#ifndef SEA_LEVEL_PRESSURE_STATE_H
+ #define SEA_LEVEL_PRESSURE_STATE_H
 
  //-----------------------------------------------------------------------------
  //-----------------------------------------------------------------------------
 
-#include "altitudeState.h"
+ #include "stateMachine.h"
 
-//-----------------------------------------------------------------------------
+ //-----------------------------------------------------------------------------
 
-class CAltitudeStateCfg : public CAltitudeState{
-private:
-	void getAndSaveCurrentSeaLevelPressure();
+class CSeaLevelPressureState : public IState{
+protected:
+	CStateMachine* _pStateMachine;
 public:
-  CAltitudeStateCfg(CStateMachine* pStateMachine):CAltitudeState{pStateMachine}{}
-	~CAltitudeStateCfg(){}
-	virtual void button0ShortPress();
-	virtual void button1ShortPress();
-	virtual void button0LongPress();
-	virtual void button1LongPress();
-	virtual void drawCurrentState();
+	CSeaLevelPressureState(CStateMachine* pStateMachine):_pStateMachine(pStateMachine){}
+	~CSeaLevelPressureState(){}
+	void button0ShortPress();
+	void button1ShortPress();
+	void button0LongPress();
+	void button1LongPress();
+	void drawCurrentState();
 };
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
 
-#endif  // __ALTITUDE_STATE_CFG_H__
+#endif  // SEA_LEVEL_PRESSURE_STATE_H
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
