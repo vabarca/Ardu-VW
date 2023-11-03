@@ -70,6 +70,7 @@
 #include "attitudeStateCfg.h"
 #include "headingState.h"
 #include "pressureState.h"
+#include "seaLevelPressureState.h"
 #include "resetState.h"
 #include "tempState.h"
 #include "tempStateCfg.h"

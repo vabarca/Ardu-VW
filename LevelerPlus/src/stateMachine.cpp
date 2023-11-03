@@ -25,7 +25,8 @@ CStateMachine::CStateMachine()
       _pAttitudeState(new CAttitudeState{this}),
       _pAttitudeStateCfg(new CAttitudeStateCfg{this}),
       _pResetState(new CResetState{this}),
-      _pPressureState(new CPressureState{this})
+      _pPressureState(new CPressureState{this}),
+      _pSeaLevelPressureState(new CSeaLevelPressureState{this})
 #ifdef USE_TEMP_STATE
       ,
       _pTempState(new CTempState{this}), _pTempStateCfg(new CTempStateCfg{this})
@@ -37,7 +38,7 @@ CStateMachine::CStateMachine()
       ,
       _ulTimeStamp(millis()), _u8g(U8G_I2C_OPT_FAST), _fTemperature(0.0f),
       _fTemperatureCalib(0.0f), _fAltitude(0.0f), _fAltitudeCalib(0.0f),
-      _fSeaLevelPressureCalib(DEFAULT_SEA_LEVEL_PRESSURE),
+      _fSeaLevelPressure(DEFAULT_SEA_LEVEL_PRESSURE),
       _fAltitudeRef(0.0f), _fPress(0.0f), _fHeading(0.0f),
       _ui8DrawNumberLines(1), _i16ax(0), _i16ay(0), _i16az(0), _i16gx(0),
       _i16gy(0), _i16gz(0), _oAccelgyro(MPU60X0{false, 0x68})
@@ -57,6 +58,7 @@ CStateMachine::~CStateMachine() {
   delete _pAttitudeStateCfg;
   delete _pResetState;
   delete _pPressureState;
+  delete _pSeaLevelPressureState;
 #ifdef USE_TEMP_STATE
   delete _pTempState;
   delete _pTempStateCfg;
@@ -77,6 +79,7 @@ CStateMachine::~CStateMachine() {
   _pTempState = 0;
   _pTempStateCfg = 0;
   _pHeadingState = 0;
+  _pSeaLevelPressureState = 0;
 }
 
 //-----------------------------------------------------------------------------
@@ -160,7 +163,7 @@ void CStateMachine::setup() {
 
   // Load calibration
   _loadCalib(_oGCal);
-  _loadSeaLevelPressureCalib(_fSeaLevelPressureCalib);
+  _loadSeaLevelPressureCalib(_fSeaLevelPressure);
   _loadAltitudeRef(_fAltitudeRef);
   _loadTempCalib(_fTemperatureCalib);
 
@@ -387,7 +390,7 @@ void CStateMachine::_tempTask() {
 
 void CStateMachine::_altitudeTask() {
 #ifdef USE_BARO
-  _fAltitude = (((pow((_fSeaLevelPressureCalib / _fPress), TERM_A) - 1.0f) * 
+  _fAltitude = (((pow((_fSeaLevelPressure / _fPress), TERM_A) - 1.0f) * 
                 (_fTemperature + ABSOLUTE_ZERO)) / TERM_B) + _fAltitudeCalib;
 
   SERIAL_PRINT("Pres:");
@@ -400,7 +403,7 @@ void CStateMachine::_altitudeTask() {
   SERIAL_PRINT("\t");
   SERIAL_PRINT("Sea Level pressure calib:");
   SERIAL_PRINT("\t");
-  SERIAL_PRINT(_fSeaLevelPressureCalib);
+  SERIAL_PRINT(_fSeaLevelPressure);
   SERIAL_PRINTLN("\t **");
 #endif
 }

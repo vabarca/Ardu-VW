@@ -48,6 +48,7 @@ class CStateMachine {
   friend class CAttitudeStateCfg;
   friend class CResetState;
   friend class CPressureState;
+  friend class CSeaLevelPressureState;
 
 private:
   // State machine
@@ -60,6 +61,7 @@ private:
   IState *_pAttitudeStateCfg;
   IState *_pResetState;
   IState *_pPressureState;
+  IState *_pSeaLevelPressureState;
   IState *_pTempState;
   IState *_pTempStateCfg;
   IState *_pHeadingState;
@@ -80,7 +82,7 @@ private:
   float _fTemperatureCalib;
   float _fAltitude;
   float _fAltitudeCalib;
-  float _fSeaLevelPressureCalib;
+  float _fSeaLevelPressure;
   float _fAltitudeRef;
   float _fPress;
   float _fHeading;
@@ -142,6 +144,7 @@ public:
   inline IState *getAttitudeStateCfg() const { return _pAttitudeStateCfg; }
   inline IState *getResetState() const { return _pResetState; }
   inline IState *getPressureState() const { return _pPressureState; }
+  inline IState *getSeaLevelPressureState() const { return _pSeaLevelPressureState; }
   inline IState *getTempState() const { return _pTempState; }
   inline IState *getTempStateCfg() const { return _pTempStateCfg; }
   inline IState *getHeadingState() const { return _pHeadingState; }
