@@ -52,13 +52,12 @@ void CAltitudeRelState::drawCurrentState()
   //THIS LINE MUST BE UNCOMMENTED IF THIS IS THE DEFAULT STATE
   //_pStateMachine->_ulTimeStamp = millis();
 
-  float fTemp (_pStateMachine->_fAltitude -
-    _pStateMachine->_fAltitudeRef);
+  float fTemp (_pStateMachine->_fAltitude - _pStateMachine->_fAltitudeRef);
 
   _pStateMachine->_setDrawNumberLines(2);
-  _pStateMachine->_u8g.setPrintPos(
-    (u8g_int_t)_pStateMachine->_getFloatDrawColPos(fTemp),
-    (u8g_int_t)_pStateMachine->_getDrawRowPos(0));
+  u8g_int_t x = (u8g_int_t)_pStateMachine->_getFloatDrawColPos(fTemp);
+  u8g_int_t y = (u8g_int_t)_pStateMachine->_getDrawRowPos(0);
+  _pStateMachine->_u8g.setPrintPos(x, y);
   _pStateMachine->_u8g.print(fTemp, 1);
 
   _pStateMachine->_u8g.drawStr(0,
