@@ -17,38 +17,38 @@
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
 
-void CPressureState::button0ShortPress() {
-  _pStateMachine->setState(_pStateMachine->getSeaLevelPressureState());
+void CSeaLevelPressureState::button0ShortPress() {
+  _pStateMachine->setState(_pStateMachine->getResetState());
 }
 
 //-----------------------------------------------------------------------------
 
-void CPressureState::button1ShortPress() {
-  _pStateMachine->setState(_pStateMachine->getAttitudeState());
+void CSeaLevelPressureState::button1ShortPress() {
+  _pStateMachine->setState(_pStateMachine->getPressureState());
 }
 
 //-----------------------------------------------------------------------------
 
-void CPressureState::button0LongPress() {}
+void CSeaLevelPressureState::button0LongPress() {}
 
 //-----------------------------------------------------------------------------
 
-void CPressureState::button1LongPress() {}
+void CSeaLevelPressureState::button1LongPress() {}
 
 //-----------------------------------------------------------------------------
 
-void CPressureState::drawCurrentState() {
+void CSeaLevelPressureState::drawCurrentState() {
   // THIS LINE MUST BE UNCOMMENTED IF THIS IS THE DEFAULT STATE
-  //_pStateMachine->_ulTimeStamp = millis();
+  _pStateMachine->_ulTimeStamp = millis();
 
   _pStateMachine->_setDrawNumberLines(2);
-  u8g_int_t x = (u8g_int_t)_pStateMachine->_getFloatDrawColPos(_pStateMachine->_fPress);
+  u8g_int_t x = (u8g_int_t)_pStateMachine->_getFloatDrawColPos(_pStateMachine->_fSeaLevelPressure);
   u8g_int_t y = (u8g_int_t)_pStateMachine->_getDrawRowPos(0);
   _pStateMachine->_u8g.setPrintPos(x, y);
-  _pStateMachine->_u8g.print(_pStateMachine->_fPress, 1);
-  x = 5;
+  _pStateMachine->_u8g.print(_pStateMachine->_fSeaLevelPressure, 1);
+  x = 0;
   y = (u8g_int_t)_pStateMachine->_getDrawRowPos(1);
-  _pStateMachine->_u8g.drawStr(x, y, "Pres(mb)");
+  _pStateMachine->_u8g.drawStr(x, y, "SPres(mb)");
 }
 
 //-----------------------------------------------------------------------------

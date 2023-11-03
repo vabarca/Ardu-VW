@@ -42,11 +42,12 @@ void CResetState::drawCurrentState() {
   //_pStateMachine->_ulTimeStamp = millis();
 
   _pStateMachine->_setDrawNumberLines(2);
-  _pStateMachine->_u8g.drawStr(25, (u8g_int_t)_pStateMachine->_getDrawRowPos(0),
-                               "Reset");
-
-  _pStateMachine->_u8g.drawStr(15, (u8g_int_t)_pStateMachine->_getDrawRowPos(1),
-                               "system?");
+  u8g_int_t x = 25;
+  u8g_int_t y = (u8g_int_t)_pStateMachine->_getDrawRowPos(0);
+  _pStateMachine->_u8g.drawStr(x, y,"Reset");
+  x = 15;
+  y = (u8g_int_t)_pStateMachine->_getDrawRowPos(1);
+  _pStateMachine->_u8g.drawStr(x, y,"system?");
 }
 
 //-----------------------------------------------------------------------------
