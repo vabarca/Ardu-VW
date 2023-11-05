@@ -24,7 +24,7 @@ void CResetState::button0ShortPress() {
 //-----------------------------------------------------------------------------
 
 void CResetState::button1ShortPress() {
-  _pStateMachine->setState(_pStateMachine->getPressureState());
+  _pStateMachine->setState(_pStateMachine->getSeaLevelPressureState());
 }
 
 //-----------------------------------------------------------------------------
